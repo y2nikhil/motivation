@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Shloks Slider</title>
+    <style>
+        body {
+            text-align: center;
+            padding: 50px;
+            font-family: Arial, sans-serif;
+            background-image: url('https://images.saymedia-content.com/.image/t_share/MTkyOTkyMzE2OTQ3MjQ0MjUz/website-background-templates.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    
+        header h1 {
+            margin: 0;
+        }
+    
+        header nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+    
+        header nav ul li {
+            margin-left: 10px;
+        }
+    
+        header nav ul li a {
+            text-decoration: none;
+            color: #555;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+    
+        header nav ul li a:hover {
+            background-color: #555;
+            color: #fff;
+        }
+        #shlok-container {
+            display: inline-block;
+            padding: 20px;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        #shlok {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #FFFFFF;
+        }
+        
+        #meaning {
+            font-size: 24px;
+            font-style: italic;
+            color: #000000;
+        }
+
+        #shlok-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #gif-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background-color: transparent;
+        }
+
+        #gif-container img {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            border-radius: 10px;
+        }
+
+        .popup {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #FFFFFF;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        #shlok-container:hover .popup {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Shloks Page</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shayari.html">Shayari</a></li>
+                <li><a href="chatroom.html">ChatRoom</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <h1>Random Shloks Slider</h1>
+    <div id="shlok-container">
+        <p id="shlok">
+            अहिंसा परमो धर्मः
+            <span class="popup">अहिंसा सबसे बड़ा धर्म है।</span>
+        </p>
+        <p id="meaning"></p>
+    </div>
+
+    <div id="gif-container">
+        <img src="https://media.tenor.com/3uZZ_aOLoNkAAAAj/flock-of-birds-birds.gif" alt="Animated GIF">
+    </div>
+
+    <script>
+        // Array of sample shloks and their meanings
+        var shloks = [
+       
+        {
+    shloka: "किसी भी हालात में हार मत मानो, क्योंकि वो हार हमेशा तभी होती है जब तुम मान लो।",
+    meaning: "Do not consider yourself defeated in any situation, because defeat only occurs when you accept it."
+  },
+  {
+    shloka: "जब तक दूसरों की तारीफें करनी होंगी, खुद की तारीफें करना मत भूलो।",
+    meaning: "As long as you praise others, do not forget to praise yourself."
+  },
+  {
+    shloka: "जब तुम सोचते हो कि छोड़ दो, तब तक मत छोड़ो।",
+    meaning: "Do not give up until you actually decide to quit."
+  },
+  {
+    shloka: "हर काम में सफलता के लिए दो चीजें ज़रूरी होती हैं: तुम्हारी सोच और तुम्हारी मेहनत।",
+    meaning: "Two things are essential for success in every endeavor: your mindset and your hard work."
+  },
+  {
+    shloka: "ज़िंदगी के लिए अपना रास्ता ख़ुद चुनो, वरना किसी और की राह पर चलते रहोगे।",
+    meaning: "Choose your own path in life, or else you will keep walking on someone else's path."
+  },
+  {
+    shloka: "अपने सपनों को इतना बड़ा बनाओ कि लोग उन्हें हासिल करने के लिए आश्चर्यचकित हो जाएं।",
+    meaning: "Make your dreams so big that people are amazed to achieve them."
+  },
+  {
+    shloka: "कठिनाइयों से डरो मत, उनसे लड़ो। जीवन में सफलता उसी को मिलती है जो समस्याओं का सामना करता है।",
+    meaning: "Do not fear difficulties, fight them. Success in life is attained by those who face challenges."
+  },
+  {
+    shloka: "जब तुम सोचो कि तुम्हारी क्षमता का अंत हो गया है, तब तुम्हें और कुछ करना चाहिए।",
+    meaning: "When you think your capacity has reached its limit, that's when you should push yourself further."
+  },
+  {
+    shloka: "हमेशा उस लक्ष्य की ओर जाओ जिसे तुम देखना चाहते हो, और अपने कारवां की ओर चलो।",
+    meaning: "Always move towards the goal you want to achieve and march towards your journey."
+  },
+  {
+    shloka: "ज़िंदगी के हर दिन को ख़ुशी से जियो, क्योंकि हर दिन अद्वितीय है।",
+    meaning: "Live each day with joy because every day is unique."
+  },
+  {
+    shloka: "हर एक सपना सच करने के लिए जरूरी नहीं होता, बस एक इरादा होना चाहिए।",
+    meaning: "Not every dream requires you to fulfill it, but you should have the determination."
+  },
+  {
+    shloka: "तुम्हारा समय शुरू हो गया है, तो अब और किसी के लिए मत इंतजार करो।",
+    meaning: "Your time has begun, so don't wait for anyone else now."
+  },
+  {
+    shloka: "विश्वास रखो, असंभव शब्द के अंदर ही संभव छिपा होता है।",
+    meaning: "Believe, the word 'impossible' hides the possible within it."
+  },
+  {
+    shloka: "जब तुम करते हो तब तुम अपने बारे में सोचो, जब तुम हारते हो तब तुम्हारे दोस्त सोचेंगे।",
+    meaning: "When you succeed, think about yourself, and when you fail, your friends will think about you."
+  },
+  {
+    shloka: "सच्चे मेहनत का कोई बदला नहीं होता, बस उसका समय आता है।",
+    meaning: "There is no substitute for true hard work, only the time for its fruition arrives."
+  },
+  {
+    shloka: "तुम्हारी सफलता तुम्हारी मेहनत पर निर्भर करती है, न कि तुम्हारे अवसर पर।",
+    meaning: "Your success depends on your hard work, not on your opportunities."
+  },
+  {
+    shloka: "हारने का डर मत रखो, क्योंकि डर आपकी दृष्टि को अंधेरे में रखता है।",
+    meaning: "Do not fear losing, as fear keeps your vision in darkness."
+  },
+  {
+    shloka: "सपने नहीं होते, तय होते हैं। और जब तुम अपने सपनों के पीछे लग जाते हो, तो वो निर्णय ले लेते हैं।",
+    meaning: "Dreams are not mere illusions, they are predetermined. And when you chase your dreams, they make decisions for you."
+  },
+  {
+    shloka: "सफलता वो नहीं होती जो तुम्हें मिलती है, बल्कि वो जो तुम्हें बनाती है।",
+    meaning: "Success is not something you acquire, it is something that shapes you."
+  },
+  {
+    shloka: "तुम्हारा सोचने का तरीका तुम्हें बनाती है, तो उसे सकारात्मक बनाओ।",
+    meaning: "Your way of thinking shapes you, so make it positive."
+  },
+  {
+    shloka: "असफलता सिर्फ एक कदम है, सफलता की ओर आगे बढ़ने के लिए।",
+    meaning: "Failure is just a step towards success, to move forward towards success."
+  },
+  {
+    shloka: "जब तुम सोचते हो कि बदलने की ज़रूरत है, तब तुम्हें बदलना चाहिए।",
+    meaning: "When you feel the need for change, you must change."
+  },
+  {
+    shloka: "खुद को पहले से बेहतर बनाने का सबसे बड़ा रास्ता, खुद के साथ सच्ची मेहनत करना है।",
+    meaning: "The biggest path to improve oneself is to work hard with oneself."
+  },
+  {
+    shloka: "तुम्हारी सफलता तुम्हारे बाहर के मापदंडों पर नहीं, बल्कि तुम्हारे अंदर की शक्ति पर निर्भर करती है।",
+    meaning: "Your success depends not on external standards, but on the power within you."
+  },
+  {
+    shloka: "जब तुम सोचते हो कि तुम अकेले हो, तब तुम गलत सोच रहे हो।",
+    meaning: "When you think you are alone, you are thinking wrong."
+  },
+  {
+    shloka: "सपनों की दुनिया से बाहर निकलो और उन्हें हकीकत में बदलो।",
+    meaning: "Step out of the world of dreams and turn them into reality."
+  },
+  {
+    shloka: "तुम्हारी सफलता तुम्हारी असंख्य छोटी-छोटी मेहनतों का परिणाम है।",
+    meaning: "Your success is the result of countless small efforts."
+  },
+  {
+    shloka: "जीवन में बदलाव के लिए खुद को प्रस्तुत करो, न कि सर्कस में शरीक होने की कोशिश करो।",
+    meaning: "Present yourself for change in life, rather than trying to be part of a circus."
+  },
+  {
+    shloka: "तुम्हारा मार्ग तुम्हारा हो सकता है, पर तुम्हारी मेहनत अनदेखी नहीं होनी चाहिए।",
+    meaning: "The path can be yours, but your hard work should not be overlooked."
+  },
+  {
+    shloka: "जब तुम अपनी मंज़िल के बारे में सोचते हो, तब तुम अपने कर्मों के बारे में सोचते हो।",
+    meaning: "When you think about your destination, you think about your actions."
+  },
+  {
+    shloka: "सपने देखने वालों को बचपना कहते हैं, पर सच में सपने देखना एक महान गुण है।",
+    meaning: "Dreamers are called childish, but truly, dreaming is a great virtue."
+  },
+  {
+    shloka: "ज़िंदगी में अपने दौर में आए हुए लोगों की बातों को सुनो, लेकिन खुद के दिल की आवाज़ पर ध्यान दो।",
+    meaning: "Listen to the words of those who have succeeded in life, but pay attention to the voice of your own heart."
+  },
+  {
+    shloka: "तुम्हारा सपना तुम्हारी पहचान हो सकता है, तभी तो उसे पूरा करना ज़रूरी है।",
+    meaning: "Your dream can become your identity, that's why it's important to fulfill it."
+  },
+  {
+    shloka: "आज की सफलता के पीछे की सबसे बड़ी वजह, कल के लिए मेहनत करना है।",
+    meaning: "The biggest reason behind today's success is working hard for tomorrow."
+  },
+  {
+    shloka: "जब तुम सोचते हो कि तुम डर रहे हो, तब तुम असली वीर बन जाते हो।",
+    meaning: "When you think you are scared, that's when you become a true warrior."
+  },
+  {
+    shloka: "समय नहीं है, समय बनाना होता है।",
+    meaning: "There is no time, you have to make time."
+  },
+  {
+    shloka: "तुम्हारा अवसर तभी आता है जब तुम तैयार हो जाते हो।",
+    meaning: "Opportunity comes to you only when you are prepared."
+  },
+  {
+    shloka: "जितना सोचोगे, उतना बड़ा सोचोगे।",
+    meaning: "The more you think, the bigger you think."
+  },
+  {
+    shloka: "सकारात्मक सोच तुम्हें आगे बढ़ाती है, नकारात्मक सोच तुम्हें पीछे ले जाती है।",
+    meaning: "Positive thinking propels you forward, negative thinking holds you back."
+  },
+  {
+    shloka: "जब तुम समय पर काम करते हो, तब तुम वक्त का सार्थक उपयोग करते हो।",
+    meaning: "When you work on time, you make meaningful use of time."
+  },
+  {
+    shloka: "तुम्हारा सपना तभी सच होगा जब तुम उठोगे और इसे पूरा करोगे।",
+    meaning: "Your dream will only come true when you rise and fulfill it."
+  },
+  {
+    shloka: "हर काम में समाधान की तलाश मत करो, बल्कि समस्या का सामना करो।",
+    meaning: "Do not search for solutions in every task, instead face the problem."
+  }
+            // Add more shlokas and their meanings here
+        ];
+
+        // Function to fetch a random shlok and its meaning from the array
+        function fetchShlok() {
+            var randomIndex = Math.floor(Math.random() * shloks.length);
+            var shlok = shloks[randomIndex];
+            document.getElementById("shlok").textContent = shlok.shloka;
+            document.getElementById("meaning").textContent = shlok.meaning;
+            document.getElementById("shlok-container").style.backgroundColor = getRandomColor();
+        }
+
+        // Function to generate a random light background color
+        function getRandomColor() {
+            var r = Math.floor(Math.random() * 156) + 100; // Generate a value between 100 and 255 for red
+            var g = Math.floor(Math.random() * 156) + 100; // Generate a value between 100 and 255 for green
+            var b = Math.floor(Math.random() * 156) + 100; // Generate a value between 100 and 255 for blue
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+        
+        // Function to move to the next shlok
+        function nextShlok() {
+            fetchShlok();
+        }
+
+        // Set an interval to automatically move to the next shlok every 3 seconds
+        setInterval(nextShlok, 7000);
+
+        // Fetch the first shlok on page load
+        fetchShlok();
+    </script>
+</body>
+</html>

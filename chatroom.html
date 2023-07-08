@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chatbot</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <div id="chat-window">
+      <div class="main-title">CHAT BOT USING CHAT-GPT</div>
+      <div id="chat-messages"></div>
+      <form id="chat-form">
+        <input
+          type="text"
+          id="chat-input"
+          autocomplete="off"
+          placeholder="Type your message here"
+          required
+        />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.3/axios.min.js"></script>
+
+    <script>
+            const form = document.getElementById("chat-form");
+            const input = document.getElementById("chat-input");
+            const messages = document.getElementById("chat-messages");
+            const apiKey = "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";
+
+            form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const message = input.value;
+            input.value = "";
+
+            messages.innerHTML += `<div class="message user-message">
+            <img src="./icons/user.png" alt="user icon"> <span>${message}</span>
+            </div>`;
+
+            // Use axios library to make a POST request to the OpenAI API
+            const response = await axios.post(
+                "https://api.openai.com/v1/completions",
+                {
+                prompt: message,
+                model: "text-davinci-003",
+                temperature: 0,
+                max_tokens: 1000,
+                top_p: 1,
+                frequency_penalty: 0.0,
+                presence_penalty: 0.0,
+                },
+                {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${apiKey}`,
+                },
+                }
+            );
+            const chatbotResponse = response.data.choices[0].text;
+
+            messages.innerHTML += `<div class="message bot-message">
+            <img src="./icons/chatbot.png" alt="bot icon"> <span>${chatbotResponse}</span>
+            </div>`;
+            });
+    </script>
+</body>
+</html>

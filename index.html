@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Quote Slider</title>
+    <style>
+        body {
+            text-align: center;
+            padding: 50px;
+            font-family: Arial, sans-serif;
+            background-image: url('https://images.saymedia-content.com/.image/t_share/MTkyOTkyMzE2OTQ3MjQ0MjUz/website-background-templates.jpg'); /* Replace with the provided background image URL */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+
+        header nav ul li {
+            margin-left: 10px;
+        }
+
+        header nav ul li a {
+            text-decoration: none;
+            color: #555;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        header nav ul li a:hover {
+            background-color: #555;
+            color: #fff;
+        }
+
+        #quote {
+            font-size: 24px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            transition: transform 0.3s ease;
+        }
+        
+        #author {
+            font-size: 18px;
+            font-style: italic;
+            margin-top: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        #quote-container {
+            display: inline-block;
+            padding: 20px;
+            background-color: #4E4FEB;
+            border-radius: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        #quote-container:hover {
+            background-color: #5D5EEB;
+            transform: scale(1.05);
+        }
+
+        .highlight {
+            background-color: yellow;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            background-color: #555;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .button-container button:hover {
+            background-color: #777;
+            transform: scale(1.1);
+        }
+
+        #custom-quote-form {
+            margin-top: 20px;
+            display: none;
+            transition: transform 0.3s ease;
+        }
+
+        #custom-quote-form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        #custom-quote-input {
+            width: 100%;
+            height: 100px;
+            resize: none;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #F5F5F5;
+            font-size: 16px;
+        }
+
+        .emoji-options {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            font-size: 24px;
+        }
+
+        .emoji-options span {
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        .emoji-options span:hover {
+            transform: scale(1.2);
+        }
+
+        .user-quote-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #EFEFEF;
+            border-radius: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            transition: transform 0.3s ease;
+        }
+
+        .user-quote-container:hover {
+            transform: scale(1.05);
+        }
+
+        .user-quote-container p {
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .user-quote-container span {
+            font-weight: bold;
+            color: #4E4FEB;
+        }
+
+        #user-quotes-container {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .user-quotes-box {
+            flex-basis: 30%;
+            padding: 20px;
+            background-color: #EFEFEF;
+            border-radius: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .user-quotes-box:hover {
+            transform: scale(1.05);
+        }
+        .links{
+            text-decoration: none;
+            color: #000;
+        }
+        .user-quotes-box p {
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Random Quote Slider</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div id="quote-container">
+        <p id="quote"></p>
+        <p id="author"></p>
+    </div>
+    <div class="button-container">
+        <button id="copy-button">Copy Image</button>
+        <button id="share-button">Share Quote</button>
+        <button id="write-quote-button">Write Your Own Quote</button>
+    </div>
+
+    <form id="custom-quote-form">
+        <label for="custom-quote-input">Your Quote:</label>
+        <textarea id="custom-quote-input" placeholder="Enter your quote here..."></textarea>
+        <div class="emoji-options">
+            <span onclick="addEmoji('&#x1F600;')">&#x1F600;</span>
+            <span onclick="addEmoji('&#x1F601;')">&#x1F601;</span>
+            <span onclick="addEmoji('&#x1F603;')">&#x1F603;</span>
+            <span onclick="addEmoji('&#x1F604;')">&#x1F604;</span>
+           <span onclick="addEmoji('&#x1F605;')">&#x1F605;</span>
+            <span onclick="addEmoji('&#x1F606;')">&#x1F606;</span>
+            <span onclick="addEmoji('&#x1F609;')">&#x1F609;</span>
+            <span onclick="addEmoji('&#x1F60A;')">&#x1F60A;</span>
+            <span onclick="addEmoji('&#x1F60B;')">&#x1F60B;</span>
+            <span onclick="addEmoji('&#x1F60E;')">&#x1F60E;</span>
+            <span onclick="addEmoji('&#x1F60D;')">&#x1F60D;</span>
+            <span onclick="addEmoji('&#x1F618;')">&#x1F618;</span>
+            <span onclick="addEmoji('&#x1F617;')">&#x1F617;</span>
+            <span onclick="addEmoji('&#x1F619;')">&#x1F619;</span>
+            <span onclick="addEmoji('&#x1F61A;')">&#x1F61A;</span>
+            <span onclick="addEmoji('&#x1F642;')">&#x1F642;</span>
+            <span onclick="addEmoji('&#x1F917;')">&#x1F917;</span>
+        </div>
+        <button type="button" id="submit-custom-quote">Submit</button>
+    </form>
+
+    <div id="user-quotes-container">
+        <div class="user-quotes-box">
+            <h2><a href="shayari.html" class="links">Shayari</a></h2>
+            <div id="user-quotes-1"></div>
+        </div>
+        <div class="user-quotes-box">
+            <h2><a href="shloks.html" class="links">Shloks</a></h2>
+            <div id="user-quotes-2"></div>
+        </div>
+        <div class="user-quotes-box">
+            <h2><a href="chatroom.html" class="links    ">ChatRoom</a></h2>
+            <div id="user-quotes-3"></div>
+        </div>
+    </div>
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script>
+        // Function to fetch a random quote from the Quotable API
+        function fetchQuote() {
+            fetch('https://api.quotable.io/random')
+                .then(response => response.json())
+                .then(data => {
+                    // Update the quote text and author on the page
+                    document.getElementById("quote").innerHTML = highlightKeywords(data.content);
+                    document.getElementById("author").textContent = "- " + data.author;
+                    document.getElementById("quote-container").style.backgroundColor = getRandomColor(); // Set the new background color
+                })
+                .catch(error => console.log(error));
+        }
+
+        // Function to generate a random light background color
+        function getRandomColor() {
+            var r = Math.floor(Math.random() * 156) + 100; // Generate a value between 100 and 255 for red
+            var g = Math.floor(Math.random() * 156) + 100; // Generate a value between 100 and 255 for green
+            var b = Math.floor(Math.random() * 156) + 100; // Generate a value between 100 and 255 for blue
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        // Function to highlight motivational/action-oriented keywords in the quote
+        function highlightKeywords(quote) {
+            var keywords = ['motivational', 'action', 'inspire', 'encourage']; // Add your desired keywords here
+            var regex = new RegExp(keywords.join("|"), "gi");
+            return quote.replace(regex, function (match) {
+                return "<span class='highlight'>" + match + "</span>";
+            });
+        }
+
+        // Function to download the image
+        function downloadImage() {
+            var quoteContainer = document.getElementById('quote-container');
+            html2canvas(quoteContainer).then(function(canvas) {
+                var link = document.createElement('a');
+                link.download = 'quote_image.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+
+        // Function to share the quote
+        function shareQuote() {
+            var quoteText = document.getElementById('quote').textContent;
+            var authorText = document.getElementById('author').textContent;
+            var shareText = `"${quoteText}" - ${authorText}`;
+            var shareURL = window.location.href;
+            var shareMessage = `${shareText} ${shareURL}`;
+            if (navigator.share) {
+                navigator.share({
+                    title: "Random Quote",
+                    text: shareMessage
+                }).catch(error => console.log(error));
+            } else {
+                console.log("Sharing not supported");
+            }
+        }
+
+        // Show the custom quote form
+        function showCustomQuoteForm() {
+            document.getElementById('custom-quote-form').style.display = 'block';
+        }
+
+        // Hide the custom quote form
+        function hideCustomQuoteForm() {
+            document.getElementById('custom-quote-form').style.display = 'none';
+        }
+
+        // Event listener for the copy button
+        document.getElementById("copy-button").addEventListener("click", downloadImage);
+
+        // Event listener for the share button
+        document.getElementById("share-button").addEventListener("click", shareQuote);
+
+        // Event listener for the "Write Your Own Quote" button
+        document.getElementById("write-quote-button").addEventListener("click", showCustomQuoteForm);
+
+        // Event listener for the submit button in the custom quote form
+        document.getElementById("submit-custom-quote").addEventListener("click", function() {
+            var customQuote = document.getElementById("custom-quote-input").value;
+            if (customQuote) {
+                addCustomQuote(customQuote);
+                hideCustomQuoteForm();
+            }
+        });
+
+        // Function to add a user-submitted quote to the page
+        function addCustomQuote(quote) {
+            var container1 = document.getElementById("user-quotes-1");
+            var container2 = document.getElementById("user-quotes-2");
+            var container3 = document.getElementById("user-quotes-3");
+
+            var quoteContainer = document.createElement("div");
+            quoteContainer.classList.add("user-quote-container");
+            var quoteText = document.createElement("p");
+            quoteText.textContent = quote;
+            var authorText = document.createElement("p");
+            authorText.innerHTML = "Submitted by: <span>You</span>";
+            quoteContainer.appendChild(quoteText);
+            quoteContainer.appendChild(authorText);
+
+            // Add the quote to the first available container
+            if (container1.childElementCount < 5) {
+                container1.appendChild(quoteContainer);
+            } else if (container2.childElementCount < 5) {
+                container2.appendChild(quoteContainer);
+            } else {
+                container3.appendChild(quoteContainer);
+            }
+        }
+
+        // Function to add emoji to the custom quote input
+        function addEmoji(emoji) {
+            var customQuoteInput = document.getElementById("custom-quote-input");
+            customQuoteInput.value += emoji;
+        }
+
+        // Function to move to the next quote
+        function nextQuote() {
+            fetchQuote();
+        }
+
+        // Setan interval to automatically move to the next quote every 3 seconds
+        setInterval(nextQuote, 3000);
+
+        // Fetch the first quote on page load
+        fetchQuote();
+    </script>
+</body>
+</html>

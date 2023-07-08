@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Shloks Slider</title>
+    <style>
+        body {
+            text-align: center;
+            padding: 50px;
+            font-family: Arial, sans-serif;
+            background-image: url('https://images.saymedia-content.com/.image/t_share/MTkyOTkyMzE2OTQ3MjQ0MjUz/website-background-templates.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    
+        header h1 {
+            margin: 0;
+        }
+    
+        header nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+    
+        header nav ul li {
+            margin-left: 10px;
+        }
+    
+        header nav ul li a {
+            text-decoration: none;
+            color: #555;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+    
+        header nav ul li a:hover {
+            background-color: #555;
+            color: #fff;
+        }
+        #shlok-container {
+            display: inline-block;
+            padding: 20px;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        #shlok {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #FFFFFF;
+        }
+        
+        #meaning {
+            font-size: 24px;
+            font-style: italic;
+            color: #000000;
+        }
+
+        #shlok-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #gif-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background-color: transparent;
+        }
+
+        #gif-container img {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            border-radius: 10px;
+        }
+
+        .popup {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #FFFFFF;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        #shlok-container:hover .popup {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Shloks Page</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shayari.html">Shayari</a></li>
+                <li><a href="chatroom.html">ChatRoom</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <h1>Random Shloks Slider</h1>
+    <div id="shlok-container">
+        <p id="shlok">
+            अहिंसा परमो धर्मः
+            <span class="popup">अहिंसा सबसे बड़ा धर्म है।</span>
+        </p>
+        <p id="meaning"></p>
+    </div>
+
+    <div id="gif-container">
+        <img src="https://media.tenor.com/3uZZ_aOLoNkAAAAj/flock-of-birds-birds.gif" alt="Animated GIF">
+    </div>
+
+    <script>
+        // Array of sample shloks and their meanings
+        var shloks = [
+        {
+                shloka: "अहिंसा परमो धर्मः",
+                meaning: "अहिंसा सबसे बड़ा धर्म है।"
+            },
+            {
+                shloka: "धर्म हिंसा तथैव च",
+                meaning: "धर्म और हिंसा दोनों ही धर्म हैं।"
+            },
+            // Add more shlokas and their meanings here
+            {
+                shloka: "श्री गुरुचरणसरोजरज निजमनमुकुर चरि",
+                meaning: "श्री गुरु के पदकमल पर समर्पित होकर चरण कैसे धारण करे।"
+            },
+            {
+                shloka: "बन्धुद्याम च पदांबुजं",
+                meaning: "बंधुत्व के द्याम में पदकमल होते हैं।"
+            },
+            {
+                shloka: "ज्ञानं ज्ञेयं च स च",
+                meaning: "ज्ञान और ज्ञेय दोनों ही श्री कृष्ण हैं।"
+            },
+            {
+                        shloka: "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन",
+                        meaning: "तू कर्मों में ही अधिकारी है, फलों में कभी नहीं।"
+                    },
+                    {
+                        shloka: "मनमेव मनुष्याणां कारणं बन्धमोक्षयोः",
+                        meaning: "मनुष्यों के बन्धन और मोक्ष का कारण मन ही है।"
+                    },
+                    {
+                        shloka: "योगस्थः कुरु कर्माणि संगं त्यक्त्वा धनञ्जय",
+                        meaning: "हे धनंजय! तू योगस्थिति में रहकर कर्म कर, फल की आसक्ति त्यागकर।"
+                    },
+                    {
+                        shloka: "विद्याविनयसम्पन्ने ब्राह्मणे गवि हस्तिनि",
+                        meaning: "विद्या और विनय से सम्पन्न ब्राह्मण में गाय और हाथी में समानता होती है।"
+                    },
+                    {
+                        shloka: "द्वौ भूतसर्गौ लोकेऽस्मिन्दैव आसुर एव च",
+                        meaning: "इस लोक में दो प्रकार के प्राणी होते हैं - दैवीय और आसुरीय।"
+                    },
+                    {
+                        shloka: "दैवी सम्पद्विमोक्षाय निबन्धायासुरी मता",
+                        meaning: "दैवी सम्पत्ति मुक्ति के लिए होती है, आसुरी सम्पत्ति बंधन के लिए होती है।"
+                    },
+                    {
+                        shloka: "यद्यदाचरति श्रेष्ठस्तत्तदेवेतरो जनः",
+                        meaning: "जो कुछ श्रेष्ठ व्यक्ति करता है, उसे दूसरे लोग भी करने लगते हैं।"
+                    },
+                    {
+                        shloka: "सर्वे भवन्तु सुखिनः सर्वे सन्तु निरामयाः",
+                        meaning: "सभी सुखी हों, सभी रोगमुक्त हों।"
+                    },
+                    {
+                        shloka: "योगः कर्मसु कौशलं",
+                        meaning: "कर्मों में योग ही कौशल है।"
+                    },
+                    {
+                        shloka: "अन्तवन्त इमे देहा नित्यस्योक्ताः शरीरिणः",
+                        meaning: "ये देह अन्तवाली हैं, स्थायी आत्मा के शरीरी होते हैं।"
+                    },
+                    {
+                shloka: "अहिंसा परमो धर्मः",
+                meaning: "अहिंसा सबसे बड़ा धर्म है।"
+            },
+            {
+                shloka: "धर्म हिंसा तथैव च",
+                meaning: "धर्म और हिंसा दोनों ही धर्म हैं।"
+            },
+            {
+                shloka: "श्री गुरुचरणसरोजरज निजमनमुकुर चरि",
+                meaning: "श्री गुरु के पदकमल पर समर्पित होकर चरण कैसे धारण करे।"
+            },
+            {
+                shloka: "बन्धुद्याम च पदांबुजं",
+                meaning: "बंधुत्व के द्याम में पदकमल होते हैं।"
+            },
+            {
+                shloka: "ज्ञानं ज्ञेयं च स च",
+                meaning: "ज्ञान और ज्ञेय दोनों ही श्री कृष्ण हैं।"
+            },
+            {
+                shloka: "शुक्लांबरधरं विष्णुं शशिवर्णं चतुर्भुजम्",
+                meaning: "शुक्ल वस्त्र धारी और चार भुजा धारी विष्णु भगवान को मैं नमन करता हूँ।"
+            },
+            {
+                shloka: "लम्बोदरं पितांबरधरं",
+                meaning: "विष्णु भगवान को मैं नमन करता हूँ, जिनके पेट की लंबाई के कारण वे लंबोदर भी कहलाते हैं।"
+            },
+            {
+                shloka: "एकदंतं चतुर्हस्तं पाशमांकुशधारिणम्",
+                meaning: "मेरे गणेश भगवान जो एक दंत और चार हाथों वाले हैं, और पाश और आधार लेने वाले हैं।"
+            },
+            {
+                shloka: "अहिंसा परमो धर्मः",
+                meaning: "अहिंसा सबसे बड़ा धर्म है।"
+            },
+            {
+                shloka: "धर्म हिंसा तथैव च",
+                meaning: "धर्म और हिंसा दोनों ही धर्म हैं।"
+            },
+            {
+                shloka: "श्री गुरुचरणसरोजरज निजमनमुकुर चरि",
+                meaning: "श्री गुरु के पदकमल पर समर्पित होकर चरण कैसे धारण करे।"
+            },
+            {
+                shloka: "बन्धुद्याम च पदांबुजं",
+                meaning: "बंधुत्व के द्याम में पदकमल होते हैं।"
+            },
+            {
+                shloka: "ज्ञानं ज्ञेयं च स च",
+                meaning: "ज्ञान और ज्ञेय दोनों ही श्री कृष्ण हैं।"
+            },
+            {
+                shloka: "शुक्लांबरधरं विष्णुं शशिवर्णं चतुर्भुजम्",
+                meaning: "शुक्ल वस्त्र धारी और चार भुजा धारी विष्णु भगवान को मैं नमन करता हूँ।"
+            },
+            {
+                shloka: "लम्बोदरं पितांबरधरं",
+                meaning: "विष्णु भगवान को मैं नमन करता हूँ, जिनके पेट की लंबाई के कारण वे लंबोदर भी कहलाते हैं।"
+            },
+            {
+                shloka: "एकदंतं चतुर्हस्तं पाशमांकुशधारिणम्",
+                meaning: "मेरे गणेश भगवान जो एक दंत और चार हाथों वाले हैं, और पाश और आधार लेने वाले हैं।"
+            },
+            {
+                shloka: "सर्वमंगलमांगल्ये शिवे सर्वार्थसाधिके",
+                meaning: "जो सब मंगलों की मंगल है, जो सभी प्रार्थनाओं को पूरा करती है, जिसका सारा अर्थ साधना में होता है।"
+            },
+            {
+                shloka: "कराग्रे वसते लक्ष्मीः करमध्ये सरस्वती",
+                meaning: "लक्ष्मी माता हाथ की उंगली में वास करती हैं और सरस्वती माता हाथ के बीच में।"
+            },
+            {
+                shloka: "सर्वेभ्यः पापयादृच्छा मुच्यते।"
+            },
+            {
+                shloka: "आत्मानं सततं ज्ञात्वा कर्मबद्धो भवेद्ध्यायिनः",
+                meaning: "हमेशा अपने को जानकर कर्मबद्ध हो जाओ, ज्ञानी बनो।"
+            },
+            {
+                shloka: "अयं निजः परो वेति गणना लघुचेतसाम्",
+                meaning: "मूर्खों के मन में यह विचार होता है कि मेरा और पराया दोनों अलग हैं।"
+            },
+            {
+                shloka: "आयुः कामयमानेन धर्मार्थः काममोक्षः च",
+                meaning: "जो मनुष्य जीवन कामनाओं से युक्त होकर धर्म, अर्थ और मोक्ष की प्राप्ति के लिए प्रयत्नशील होता है।"
+            },
+            {
+                shloka: "श्रेयान्स्वधर्मो विगुणः परधर्मात्स्वनुष्ठितात्",
+                meaning: "अपने स्वधर्म में दोषयुक्त होने से परधर्म की अनुष्ठान करने से श्रेयस्कर है।"
+            },
+            {
+                shloka: "सर्वधर्मान् परित्यज्य मामेकं शरणं व्रज",
+                meaning: "सभी धर्मों को छोड़कर मुझे एकलव शरण में जाओ।"
+            },
+            {
+                shloka: "यदि ह्यहं न वर्तेयं जातु कर्मण्यतन्द्रितः",
+                meaning: "यदि मैं कर्मों में तत्पर नहीं रहता तो सब कर्म मेरा नष्ट हो जाता।"
+            },
+            {
+                shloka: "उत्सीदेयुरिमे लोका न कुर्यां कर्म चेदहम्",
+                meaning: "यदि मैं कर्म न करूँ तो ये सब लोग नष्ट हो जाते हैं और अशुभ कार्य करने लगते हैं।"
+            },
+            {
+                shloka: "यदि ह्यहं न वर्तेयं जातु कर्मणि तान्यहम्",
+                meaning: "यदि मैं कर्मों में तत्पर नहीं रहता तो उन कर्मों का संग्रह मैं कैसे करूँगा।"
+            },
+            {
+                shloka: "यदि त्वं शक्नोसि कर्माण्यत्रुतुं मां नियोजय",
+                meaning: "यदि तू कर्मों को नहीं छोड़ सकता तोउन कर्मों में मुझे नियोजित कर।"
+            },
+            {
+                shloka: "यदि भगवान ने हमें दिया है",
+                meaning: "यदि भगवान ने हमें दिया है, तो कौन हमारे खिलाफ हो सकता है।"
+            },
+            {
+                shloka: "सत्यमेव जयते नानृतं",
+                meaning: "सत्य ही विजयी होता है, न कि असत्य।"
+            },
+            {
+                shloka: "मातृदेवो भव, पितृदेवो भव",
+                meaning: "माता को देवता मानो, पिता को देवता मानो।"
+            },
+            {
+                shloka: "आचार्यदेवो भव",
+                meaning: "आचार्य को देवता मानो।"
+            },
+            {
+                shloka: "अतिथिदेवो भव",
+                meaning: "अतिथि को देवता मानो।"
+            },
+            {
+                shloka: "यान्यन्न श्राद्धं कुर्वीत, तत्र तत्र सर्वदेवता",
+                meaning: "जहां जहां श्राद्ध किया जाए, वहां वहां सभी देवताओं का वास होता है।"
+            },
+            {
+                shloka: "यत्र नार्यस्तु पूज्यन्ते रमन्ते तत्र देवताः",
+                meaning: "जहां महिलाएं पूज्य होती हैं, वहां देवताओं का वास होता है।"
+            },
+            {
+                shloka: "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन",
+                meaning: "तू कर्मों में ही अधिकारी है, फलों में कभी नहीं।"
+            },
+            {
+                shloka: "मनमेव मनुष्याणां कारणं बन्धमोक्षयोः",
+                meaning: "मनुष्यों के बन्धन और मोक्ष का कारण मन ही है।"
+            },
+            {
+                shloka: "योगस्थः कुरु कर्माणि संगं त्यक्त्वा धनञ्जय",
+                meaning: "हे धनंजय! तू योगस्थिति में रहकर कर्म कर, फल की आसक्ति त्यागकर।"
+            },
+            {
+                shloka: "विद्याविनयसम्पन्ने ब्राह्मणे गवि हस्तिनि",
+                meaning: "विद्या और विनय से सम्पन्न ब्राह्मण में गाय और हाथी में समानता होती है।"
+            },
+            {
+                shloka: "द्वौ भूतसर्गौ लोकेऽस्मिन्दैव आसुर एव च",
+                meaning: "इस लोक में दो प्रकार के प्राणी होते हैं - दैवीय और आसुरीय।"
+            },
+            {
+                shloka: "दैवी सम्पद्विमोक्षाय निबन्धायासुरी मता",
+                meaning: "दैवी सम्पत्ति मुक्ति के लिए होती है, आसुरी सम्पत्ति बंधन के लिए होती है।"
+            },
+            {
+                shloka: "यद्यदाचरति श्रेष्ठस्तत्तदेवेतरो जनः",
+                meaning: "जो कुछ श्रेष्ठ व्यक्ति करता है, उसे दूसरे लोग भी करने लगते हैं।"
+            },
+            {
+                shloka: "सर्वे भवन्तु सुखिनः सर्वे सन्तु निरामयाः",
+                meaning: "सभी सुखी हों, सभी रोगमुक्त हों।"
+            },
+            {
+                shloka: "योगः कर्मसु कौशलं",
+                meaning: "कर्मों में योग ही कौशल है।"
+            },
+            {
+                shloka: "अन्तवन्त इमे देहा नित्यस्योक्ताः शरीरिणः",
+                meaning: "ये देह अन्तवाली हैं, स्थायी आत्मा के शरीरी होते हैं।"
+            }
+            // Add more shlokas and their meanings here
+        ];
+
+        // Function to fetch a random shlok and its meaning from the array
+        function fetchShlok() {
+            var randomIndex = Math.floor(Math.random() * shloks.length);
+            var shlok = shloks[randomIndex];
+            document.getElementById("shlok").textContent = shlok.shloka;
+            document.getElementById("meaning").textContent = shlok.meaning;
+            document.getElementById("shlok-container").style.backgroundColor = getRandomColor();
+        }
+
+        // Function to generate a random light background color
+        function getRandomColor() {
+            var r = Math.floor(Math.random() * 156) + 100; // Generate a value between 100 and 255 for red
+            var g = Math.floor(Math.random() * 156) + 100; // Generate a value between 100 and 255 for green
+            var b = Math.floor(Math.random() * 156) + 100; // Generate a value between 100 and 255 for blue
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+        
+        // Function to move to the next shlok
+        function nextShlok() {
+            fetchShlok();
+        }
+
+        // Set an interval to automatically move to the next shlok every 3 seconds
+        setInterval(nextShlok, 7000);
+
+        // Fetch the first shlok on page load
+        fetchShlok();
+    </script>
+</body>
+</html>
