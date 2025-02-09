@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Nikhil</title>
+    <title>QuotableJourney</title>
     <style>
         /* Timer styles */
         #timer-container {
@@ -232,7 +232,7 @@
 </head>
 <body>
     <header>
-        <h1>Nikhil</h1>
+        <h1>QuotableJourney✍️</h1>
         <nav>
             <ul>
                 <li><a href="#">Home💒(घर)</a></li>
@@ -352,18 +352,20 @@
             toggleFullScreen();
         });
         
-        // Function to fetch a random quote from the Quotable API
+        // Function to fetch a random quote from the new API
         function fetchQuote() {
-            fetch('https://api.api-ninjas.com/v1/quotes
-')
-                .then(response => response.json())
-                .then(data => {
-                    // Update the quote text and author on the page
-                    document.getElementById("quote").innerHTML = highlightKeywords(data.content);
-                    document.getElementById("author").textContent = "- " + data.author;
-                    document.getElementById("quote-container").style.backgroundColor = getRandomColor(); // Set the new background color
-                })
-                .catch(error => console.log(error));
+            fetch('https://api.quotable.io/quotes/random', {
+                headers: { 'X-Api-Key': 'https://api.quotable.io/quotes/random' } // Replace YOUR_API_KEY with your actual API key
+            })
+            .then(response => response.json())
+            .then(data => {
+                const quoteData = data[0];
+                // Update the quote text and author on the page
+                document.getElementById("quote").innerHTML = highlightKeywords(quoteData.quote);
+                document.getElementById("author").textContent = "- " + quoteData.author;
+                document.getElementById("quote-container").style.backgroundColor = getRandomColor(); // Set the new background color
+            })
+            .catch(error => console.log(error));
         }
 
         // Function to generate a random light background color
