@@ -5,18 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Productivity Journey</title>
     <style>
-        /* General Styles */
         body {
             text-align: center;
-            padding: 20px;
+            padding: 50px;
             font-family: Arial, sans-serif;
             background-image: url('https://images.saymedia-content.com/.image/t_share/MTkyOTkyMzE2OTQ3MjQ0MjUz/website-background-templates.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            margin: 0;
         }
-
+        
         header {
             display: flex;
             justify-content: space-between;
@@ -62,11 +60,14 @@
             cursor: pointer;
         }
 
+        .highlight {
+            background-color: yellow;
+        }
+
         .button-container {
             display: flex;
             justify-content: center;
             margin-top: 20px;
-            gap: 10px;
         }
 
         .button-container button {
@@ -76,6 +77,7 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            margin: 0 5px;
             font-size: 16px;
             transition: background-color 0.3s ease, transform 0.3s ease;
         }
@@ -113,7 +115,6 @@
             justify-content: center;
             margin-top: 10px;
             font-size: 24px;
-            flex-wrap: wrap;
         }
 
         .emoji-options span {
@@ -133,7 +134,6 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
             text-align: left;
             transition: transform 0.3s ease;
-            position: relative;
         }
 
         .user-task-container:hover {
@@ -144,21 +144,18 @@
             font-size: 18px;
             line-height: 1.5;
             margin-bottom: 10px;
+            transition: transform 0.3s ease;
         }
 
-        .delete-task {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            font-size: 20px;
+        .user-task-container span {
+            font-weight: bold;
+            color: #4E4FEB;
         }
 
         #user-tasks-container {
             margin-top: 50px;
             display: flex;
             justify-content: space-between;
-            flex-wrap: wrap;
         }
 
         .user-tasks-box {
@@ -169,98 +166,45 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
             text-align: center;
             transition: transform 0.3s ease;
-            margin-bottom: 20px;
         }
 
         .user-tasks-box:hover {
             transform: scale(1.05);
         }
-
-        #recycle-bin {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background-color: #EFEFEF;
-            padding: 15px;
-            border-radius: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
+        
+        .links {
+            text-decoration: none;
+            color: #000;
+        }
+        
+        .user-tasks-box p {
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
         }
 
-        #recycle-bin span {
-            font-size: 24px;
-        }
-
-        #stats-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
+        .timer-controls button {
             background-color: #555;
             color: #fff;
-            padding: 15px;
-            border-radius: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border: none;
+            padding: 5px;
+            border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 18px;
+            margin: 5px;
         }
 
-        #stats-button:hover {
+        .timer-controls button:hover {
             background-color: #777;
         }
 
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            header nav ul {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            header nav ul li {
-                margin: 5px 0;
-            }
-
-            #task-container {
-                width: 90%;
-                padding: 15px;
-            }
-
-            .button-container {
-                flex-direction: column;
-            }
-
-            .button-container button {
-                margin: 5px 0;
-            }
-
-            #user-tasks-container {
-                flex-direction: column;
-            }
-
-            .user-tasks-box {
-                margin-bottom: 20px;
-            }
-
-            #custom-task-form {
-                width: 90%;
-            }
-
-            #custom-task-input {
-                height: 80px;
-            }
-        }
     </style>
 </head>
 <body>
     <header>
-        <h1>Test 8</h1>
+        <h1>Test4</h1>
         <nav>
             <ul>
                 <li><a href="shayari.html" class="links">Shayari🪶</a></li>
@@ -318,12 +262,7 @@
         </div>
     </div>
 
-    <div id="recycle-bin" onclick="showRecycleBin()">
-        <span>♻️</span>
-    </div>
-
-    <div id="stats-button" onclick="showStats()">Stats</div>
-
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
         // Function to copy task
         function copyTask() {
@@ -356,7 +295,25 @@
             document.getElementById('custom-task-form').style.display = 'none';
         }
 
-        // Function to add a user-submitted task
+        // Event listener for the copy button
+        document.getElementById("copy-button").addEventListener("click", copyTask);
+
+        // Event listener for the share button
+        document.getElementById("share-button").addEventListener("click", shareTask);
+
+        // Event listener for the "Add Task" button
+        document.getElementById("write-task-button").addEventListener("click", showCustomTaskForm);
+
+        // Event listener for the submit button in the custom task form
+        document.getElementById("submit-custom-task").addEventListener("click", function() {
+            var customTask = document.getElementById("custom-task-input").value;
+            if (customTask) {
+                addCustomTask(customTask);
+                hideCustomTaskForm();
+            }
+        });
+
+        // Function to add a user-submitted task to the page
         function addCustomTask(task) {
             var container1 = document.getElementById("user-tasks-1");
             var container2 = document.getElementById("user-tasks-2");
@@ -365,18 +322,42 @@
             var taskContainer = document.createElement("div");
             taskContainer.classList.add("user-task-container");
             taskContainer.style.backgroundColor = getRandomColor();
-
             var taskText = document.createElement("p");
             taskText.textContent = task;
+            var progressButton = document.createElement("button");
+            progressButton.innerHTML = "⏩";
+            progressButton.onclick = () => moveTask(taskContainer);
+            var removeButton = document.createElement("button");
+            removeButton.innerHTML = "✖️";
+            removeButton.onclick = () => taskContainer.remove();
 
-            var deleteButton = document.createElement("span");
-            deleteButton.classList.add("delete-task");
-            deleteButton.innerHTML = "✖️";
-            deleteButton.onclick = () => moveToRecycleBin(taskContainer);
+            // Timer elements
+            var timer = document.createElement("div");
+            timer.className = 'timer';
+            timer.textContent = '00:00';
+            var timerControls = document.createElement("div");
+            timerControls.className = 'timer-controls';
+            var startButton = document.createElement("button");
+            startButton.innerHTML = "▶️";
+            startButton.onclick = () => startTimer(timer);
+            var pauseButton = document.createElement("button");
+            pauseButton.innerHTML = "⏸️";
+            pauseButton.onclick = () => pauseTimer(timer);
+            var resetButton = document.createElement("button");
+            resetButton.innerHTML = "🔄";
+            resetButton.onclick = () => resetTimer(timer);
+
+            timerControls.appendChild(startButton);
+            timerControls.appendChild(pauseButton);
+            timerControls.appendChild(resetButton);
 
             taskContainer.appendChild(taskText);
-            taskContainer.appendChild(deleteButton);
+            taskContainer.appendChild(progressButton);
+            taskContainer.appendChild(removeButton);
+            taskContainer.appendChild(timer);
+            taskContainer.appendChild(timerControls);
 
+            // Add the task to the first available container
             if (container1.childElementCount < 5) {
                 container1.appendChild(taskContainer);
             } else if (container2.childElementCount < 5) {
@@ -385,29 +366,60 @@
                 container3.appendChild(taskContainer);
             }
 
-            hideCustomTaskForm();
+            updateTaskContainer(task, new Date().toLocaleDateString('en-GB'));
         }
 
-        // Function to move task to recycle bin
-        function moveToRecycleBin(taskContainer) {
-            var recycleBin = document.getElementById("recycle-bin");
-            recycleBin.appendChild(taskContainer);
+        // Timer functions
+        function startTimer(timer) {
+            if (!timer.interval) {
+                timer.interval = setInterval(() => {
+                    timer.time = (timer.time || 0) + 1;
+                    updateTimerDisplay(timer);
+                }, 1000);
+            }
         }
 
-        // Function to show recycle bin
-        function showRecycleBin() {
-            alert("Recycle Bin Content: " + document.getElementById("recycle-bin").innerHTML);
+        function pauseTimer(timer) {
+            clearInterval(timer.interval);
+            timer.interval = null;
         }
 
-        // Function to show stats
-        function showStats() {
-            alert("Statistics will be displayed here.");
+        function resetTimer(timer) {
+            clearInterval(timer.interval);
+            timer.interval = null;
+            timer.time = 0;
+            updateTimerDisplay(timer);
+        }
+
+        function updateTimerDisplay(timer) {
+            const minutes = Math.floor(timer.time / 60);
+            const seconds = timer.time % 60;
+            timer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        // Function to move task to the next column
+        function moveTask(taskContainer) {
+            const container1 = document.getElementById("user-tasks-1");
+            const container2 = document.getElementById("user-tasks-2");
+            const container3 = document.getElementById("user-tasks-3");
+
+            if (taskContainer.parentElement.id === "user-tasks-1") {
+                container2.appendChild(taskContainer);
+            } else if (taskContainer.parentElement.id === "user-tasks-2") {
+                container3.appendChild(taskContainer);
+            }
         }
 
         // Function to add emoji to the custom task input
         function addEmoji(emoji) {
             var customTaskInput = document.getElementById("custom-task-input");
             customTaskInput.value += emoji;
+        }
+
+        // Function to update the task container with task and date
+        function updateTaskContainer(task, date) {
+            document.getElementById('task').textContent = task;
+            document.getElementById('date').textContent = date;
         }
 
         // Function to generate a random light background color
@@ -418,23 +430,11 @@
             return `rgb(${r}, ${g}, ${b})`;
         }
 
-        // Event listeners
-        document.getElementById("copy-button").addEventListener("click", copyTask);
-        document.getElementById("share-button").addEventListener("click", shareTask);
-        document.getElementById("write-task-button").addEventListener("click", showCustomTaskForm);
-        document.getElementById("submit-custom-task").addEventListener("click", function() {
-            var customTask = document.getElementById("custom-task-input").value;
-            if (customTask) {
-                addCustomTask(customTask);
-                document.getElementById("custom-task-input").value = "";
-            }
-        });
-
-        // Display today's date
+        // Display today's date and day in the task container by default
         document.addEventListener('DOMContentLoaded', () => {
             const today = new Date();
             const date = today.toLocaleDateString('en-GB');
-            document.getElementById('date').textContent = date;
+            updateTaskContainer('', date);
         });
     </script>
 </body>
