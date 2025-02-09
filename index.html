@@ -1,28 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>QuotableJourney</title>
+    <title>Productivity Journey</title>
     <style>
         /* Timer styles */
         #timer-container {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        #timer {
-            font-size: 48px;
-        }
-
-        #miniplayer {
             position: fixed;
             bottom: 10px;
             right: 10px;
@@ -30,7 +13,32 @@
             color: white;
             padding: 10px;
             border-radius: 10px;
-            display: none;
+            z-index: 1000;
+            margin-bottom: 10px;
+        }
+
+        .timer {
+            font-size: 20px;
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+
+        .timer-controls button {
+            background-color: #555;
+            color: #fff;
+            border: none;
+            padding: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .timer-controls button:hover {
+            background-color: #777;
         }
 
         body {
@@ -78,21 +86,7 @@
             color: #fff;
         }
 
-        #quote {
-            font-size: 24px;
-            margin-bottom: 20px;
-            line-height: 1.5;
-            transition: transform 0.3s ease;
-        }
-        
-        #author {
-            font-size: 18px;
-            font-style: italic;
-            margin-top: 10px;
-            transition: transform 0.3s ease;
-        }
-
-        #quote-container {
+        #task-container {
             display: inline-block;
             padding: 20px;
             background-color: #4E4FEB;
@@ -102,7 +96,7 @@
             cursor: pointer;
         }
 
-        #quote-container:hover {
+        #task-container:hover {
             background-color: #5D5EEB;
             transform: scale(1.05);
         }
@@ -134,19 +128,19 @@
             transform: scale(1.1);
         }
 
-        #custom-quote-form {
+        #custom-task-form {
             margin-top: 20px;
             display: none;
             transition: transform 0.3s ease;
         }
 
-        #custom-quote-form label {
+        #custom-task-form label {
             display: block;
             margin-bottom: 10px;
             font-weight: bold;
         }
 
-        #custom-quote-input {
+        #custom-task-input {
             width: 100%;
             height: 100px;
             resize: none;
@@ -173,7 +167,7 @@
             transform: scale(1.2);
         }
 
-        .user-quote-container {
+        .user-task-container {
             margin-top: 20px;
             padding: 20px;
             background-color: #EFEFEF;
@@ -183,29 +177,29 @@
             transition: transform 0.3s ease;
         }
 
-        .user-quote-container:hover {
+        .user-task-container:hover {
             transform: scale(1.05);
         }
 
-        .user-quote-container p {
+        .user-task-container p {
             font-size: 18px;
             line-height: 1.5;
             margin-bottom: 10px;
             transition: transform 0.3s ease;
         }
 
-        .user-quote-container span {
+        .user-task-container span {
             font-weight: bold;
             color: #4E4FEB;
         }
 
-        #user-quotes-container {
+        #user-tasks-container {
             margin-top: 50px;
             display: flex;
             justify-content: space-between;
         }
 
-        .user-quotes-box {
+        .user-tasks-box {
             flex-basis: 30%;
             padding: 20px;
             background-color: #EFEFEF;
@@ -215,52 +209,57 @@
             transition: transform 0.3s ease;
         }
 
-        .user-quotes-box:hover {
+        .user-tasks-box:hover {
             transform: scale(1.05);
         }
-        .links{
+        .links {
             text-decoration: none;
             color: #000;
         }
-        .user-quotes-box p {
+        .user-tasks-box p {
             font-size: 18px;
             line-height: 1.5;
             margin-bottom: 10px;
             transition: transform 0.3s ease;
         }
+
+        #start-timer-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>test</h1>
+        <h1>Productivity Journey</h1>
         <nav>
             <ul>
-                <li><a href="#">Home💒(घर)</a></li>
-                <li><a href="#">Alpha🗿</a></li>
-                <li><a href="#">Beta☕</a></li>
+                <li><a href="shayari.html" class="links">Shayari🪶</a></li>
+                <li><a href="shloks.html" class="links">Shloks🕉️</a></li>
+                <li><a href="chatroom.html" class="links">ChatRoom🦢</a></li>
             </ul>
         </nav>
     </header>
-    <div id="quote-container">
-        <p id="quote"></p>
+    <div id="task-container">
+        <p id="task"></p>
         <p id="author"></p>
     </div>
     <div class="button-container">
-        <button id="copy-button">Copy Image</button>
-        <button id="share-button">Share Quote</button>
-        <button id="write-quote-button">Write Your Own Quote</button>
-        <button id="timer-button">Start Timer</button>
+        <button id="copy-button">Copy Task</button>
+        <button id="share-button">Share Task</button>
+        <button id="write-task-button">Add Task</button>
     </div>
 
-    <form id="custom-quote-form">
-        <label for="custom-quote-input">Your Quote:</label>
-        <textarea id="custom-quote-input" placeholder="Enter your quote here..."></textarea>
+    <form id="custom-task-form">
+        <label for="custom-task-input">Your Task:</label>
+        <textarea id="custom-task-input" placeholder="Enter your task here..."></textarea>
         <div class="emoji-options">
             <span onclick="addEmoji('&#x1F600;')">&#x1F600;</span>
             <span onclick="addEmoji('&#x1F601;')">&#x1F601;</span>
             <span onclick="addEmoji('&#x1F603;')">&#x1F603;</span>
             <span onclick="addEmoji('&#x1F604;')">&#x1F604;</span>
-           <span onclick="addEmoji('&#x1F605;')">&#x1F605;</span>
+            <span onclick="addEmoji('&#x1F605;')">&#x1F605;</span>
             <span onclick="addEmoji('&#x1F606;')">&#x1F606;</span>
             <span onclick="addEmoji('&#x1F609;')">&#x1F609;</span>
             <span onclick="addEmoji('&#x1F60A;')">&#x1F60A;</span>
@@ -274,48 +273,73 @@
             <span onclick="addEmoji('&#x1F642;')">&#x1F642;</span>
             <span onclick="addEmoji('&#x1F917;')">&#x1F917;</span>
         </div>
-        <button type="button" id="submit-custom-quote">Submit</button>
+        <button type="button" id="submit-custom-task">Submit</button>
     </form>
 
-    <div id="user-quotes-container">
-        <div class="user-quotes-box">
-            <h2><a href="shayari.html" class="links">Shayari🪶</a></h2>
-            <div id="user-quotes-1"></div>
+    <div id="user-tasks-container">
+        <div class="user-tasks-box">
+            <h2>Tasks</h2>
+            <div id="user-tasks-1"></div>
         </div>
-        <div class="user-quotes-box">
-            <h2><a href="shloks.html" class="links">Shloks🕉️</a></h2>
-            <div id="user-quotes-2"></div>
+        <div class="user-tasks-box">
+            <h2>In Progress</h2>
+            <div id="user-tasks-2"></div>
         </div>
-        <div class="user-quotes-box">
-            <h2><a href="chatroom.html" class="links    ">ChatRoom🦢</a></h2>
-            <div id="user-quotes-3"></div>
+        <div class="user-tasks-box">
+            <h2>Done</h2>
+            <div id="user-tasks-3"></div>
         </div>
     </div>
 
-    <div id="timer-container">
-        <div id="timer">00:00</div>
-        <button onclick="toggleFullScreen()">Toggle Full Screen</button>
-        <button onclick="toggleMiniplayer()">Toggle Mini Player</button>
-    </div>
-
-    <div id="miniplayer">
-        <div id="minitimer">00:00</div>
-        <button onclick="toggleMiniplayer()">Close</button>
-    </div>
+    <button id="start-timer-button">Start Timer</button>
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
-        // Timer functionality
-        let timerInterval;
-        let isFullScreen = false;
-        let isMiniplayer = false;
+        let activeTimers = 0;
 
-        function startTimer() {
+        function createTimer() {
+            const timerContainer = document.createElement('div');
+            timerContainer.className = 'timer-container';
+            timerContainer.id = `timer-container-${activeTimers}`;
+            const timer = document.createElement('div');
+            timer.className = 'timer';
+            timer.id = `timer-${activeTimers}`;
+            timer.textContent = '00:00';
+
+            const timerControls = document.createElement('div');
+            timerControls.className = 'timer-controls';
+
+            const pauseButton = document.createElement('button');
+            pauseButton.textContent = 'Pause';
+            pauseButton.onclick = () => pauseTimer(activeTimers);
+
+            const resumeButton = document.createElement('button');
+            resumeButton.textContent = 'Resume';
+            resumeButton.onclick = () => resumeTimer(activeTimers);
+
+            const cancelButton = document.createElement('button');
+            cancelButton.textContent = 'Cancel';
+            cancelButton.onclick = () => cancelTimer(activeTimers);
+
+            timerControls.appendChild(pauseButton);
+            timerControls.appendChild(resumeButton);
+            timerControls.appendChild(cancelButton);
+
+            timerContainer.appendChild(timer);
+            timerContainer.appendChild(timerControls);
+            document.body.appendChild(timerContainer);
+
+            startTimer(activeTimers);
+            activeTimers++;
+        }
+
+        let timers = {};
+
+        function startTimer(timerId) {
             let seconds = 0;
-            timerInterval = setInterval(() => {
+            timers[timerId] = setInterval(() => {
                 seconds++;
-                document.getElementById('timer').textContent = formatTime(seconds);
-                document.getElementById('minitimer').textContent = formatTime(seconds);
+                document.getElementById(`timer-${timerId}`).textContent = formatTime(seconds);
             }, 1000);
         }
 
@@ -325,87 +349,47 @@
             return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
 
-        function toggleFullScreen() {
-            const timerContainer = document.getElementById('timer-container');
-            if (!isFullScreen) {
-                timerContainer.style.display = 'flex';
-                isFullScreen = true;
-            } else {
-                timerContainer.style.display = 'none';
-                isFullScreen = false;
-            }
+        function pauseTimer(timerId) {
+            clearInterval(timers[timerId]);
         }
 
-        function toggleMiniplayer() {
-            const miniplayer = document.getElementById('miniplayer');
-            if (!isMiniplayer) {
-                miniplayer.style.display = 'block';
-                isMiniplayer = true;
-            } else {
-                miniplayer.style.display = 'none';
-                isMiniplayer = false;
-            }
+        function resumeTimer(timerId) {
+            let currentTime = document.getElementById(`timer-${timerId}`).textContent;
+            let [mins, secs] = currentTime.split(':').map(Number);
+            let totalSeconds = mins * 60 + secs;
+
+            timers[timerId] = setInterval(() => {
+                totalSeconds++;
+                document.getElementById(`timer-${timerId}`).textContent = formatTime(totalSeconds);
+            }, 1000);
         }
 
-        document.getElementById('timer-button').addEventListener('click', () => {
-            startTimer();
-            toggleFullScreen();
-        });
-        
-        // Function to fetch a random quote from the new API
-        function fetchQuote() {
-            fetch('https://api.quotable.io/quotes/random', {
-                headers: { 'X-Api-Key': 'https://api.quotable.io/quotes/random' } // Replace YOUR_API_KEY with your actual API key
-            })
-            .then(response => response.json())
-            .then(data => {
-                const quoteData = data[0];
-                // Update the quote text and author on the page
-                document.getElementById("quote").innerHTML = highlightKeywords(quoteData.quote);
-                document.getElementById("author").textContent = "- " + quoteData.author;
-                document.getElementById("quote-container").style.backgroundColor = getRandomColor(); // Set the new background color
-            })
-            .catch(error => console.log(error));
+        function cancelTimer(timerId) {
+            clearInterval(timers[timerId]);
+            document.getElementById(`timer-container-${timerId}`).remove();
         }
 
-        // Function to generate a random light background color
-        function getRandomColor() {
-            var r = Math.floor(Math.random() * 156) + 100; // Generate a value between 100 and 255 for red
-            var g = Math.floor(Math.random() * 156) + 100; // Generate a value between 100 and 255 for green
-            var b = Math.floor(Math.random() * 156) + 100; // Generate a value between 100 and 255 for blue
-            return `rgb(${r}, ${g}, ${b})`;
-        }
+        document.getElementById('start-timer-button').addEventListener('click', createTimer);
 
-        // Function to highlight motivational/action-oriented keywords in the quote
-        function highlightKeywords(quote) {
-            var keywords = ['motivational', 'action', 'inspire', 'encourage']; // Add your desired keywords here
-            var regex = new RegExp(keywords.join("|"), "gi");
-            return quote.replace(regex, function (match) {
-                return "<span class='highlight'>" + match + "</span>";
+        // Function to copy task
+        function copyTask() {
+            const taskText = document.getElementById('task').textContent;
+            navigator.clipboard.writeText(taskText).then(() => {
+                alert('Task copied to clipboard.');
+            }).catch(err => {
+                console.error('Failed to copy task: ', err);
             });
         }
 
-        // Function to download the image
-        function downloadImage() {
-            var quoteContainer = document.getElementById('quote-container');
-            html2canvas(quoteContainer).then(function(canvas) {
-                var link = document.createElement('a');
-                link.download = 'quote_image.png';
-                link.href = canvas.toDataURL();
-                link.click();
-            });
-        }
-
-        // Function to share the quote
-        function shareQuote() {
-            var quoteText = document.getElementById('quote').textContent;
-            var authorText = document.getElementById('author').textContent;
-            var shareText = `"${quoteText}" - ${authorText}`;
-            var shareURL = window.location.href;
-            var shareMessage = `${shareText} ${shareURL}`;
+        // Function to share task
+        function shareTask() {
+            const taskText = document.getElementById('task').textContent;
+            const shareText = `"${taskText}"`;
+            const shareURL = window.location.href;
+            const shareMessage = `${shareText} ${shareURL}`;
             if (navigator.share) {
                 navigator.share({
-                    title: "Random Quote",
+                    title: "Task",
                     text: shareMessage
                 }).catch(error => console.log(error));
             } else {
@@ -413,75 +397,64 @@
             }
         }
 
-        // Show the custom quote form
-        function showCustomQuoteForm() {
-            document.getElementById('custom-quote-form').style.display = 'block';
+        // Show the custom task form
+        function showCustomTaskForm() {
+            document.getElementById('custom-task-form').style.display = 'block';
         }
 
-        // Hide the custom quote form
-        function hideCustomQuoteForm() {
-            document.getElementById('custom-quote-form').style.display = 'none';
+        // Hide the custom task form
+        function hideCustomTaskForm() {
+            document.getElementById('custom-task-form').style.display = 'none';
         }
 
         // Event listener for the copy button
-        document.getElementById("copy-button").addEventListener("click", downloadImage);
+        document.getElementById("copy-button").addEventListener("click", copyTask);
 
         // Event listener for the share button
-        document.getElementById("share-button").addEventListener("click", shareQuote);
+        document.getElementById("share-button").addEventListener("click", shareTask);
 
-        // Event listener for the "Write Your Own Quote" button
-        document.getElementById("write-quote-button").addEventListener("click", showCustomQuoteForm);
+        // Event listener for the "Add Task" button
+        document.getElementById("write-task-button").addEventListener("click", showCustomTaskForm);
 
-        // Event listener for the submit button in the custom quote form
-        document.getElementById("submit-custom-quote").addEventListener("click", function() {
-            var customQuote = document.getElementById("custom-quote-input").value;
-            if (customQuote) {
-                addCustomQuote(customQuote);
-                hideCustomQuoteForm();
+        // Event listener for the submit button in the custom task form
+        document.getElementById("submit-custom-task").addEventListener("click", function() {
+            var customTask = document.getElementById("custom-task-input").value;
+            if (customTask) {
+                addCustomTask(customTask);
+                hideCustomTaskForm();
             }
         });
 
-        // Function to add a user-submitted quote to the page
-        function addCustomQuote(quote) {
-            var container1 = document.getElementById("user-quotes-1");
-            var container2 = document.getElementById("user-quotes-2");
-            var container3 = document.getElementById("user-quotes-3");
+        // Function to add a user-submitted task to the page
+        function addCustomTask(task) {
+            var container1 = document.getElementById("user-tasks-1");
+            var container2 = document.getElementById("user-tasks-2");
+            var container3 = document.getElementById("user-tasks-3");
 
-            var quoteContainer = document.createElement("div");
-            quoteContainer.classList.add("user-quote-container");
-            var quoteText = document.createElement("p");
-            quoteText.textContent = quote;
+            var taskContainer = document.createElement("div");
+            taskContainer.classList.add("user-task-container");
+            var taskText = document.createElement("p");
+            taskText.textContent = task;
             var authorText = document.createElement("p");
             authorText.innerHTML = "Submitted by: <span>You</span>";
-            quoteContainer.appendChild(quoteText);
-            quoteContainer.appendChild(authorText);
+            taskContainer.appendChild(taskText);
+            taskContainer.appendChild(authorText);
 
-            // Add the quote to the first available container
+            // Add the task to the first available container
             if (container1.childElementCount < 5) {
-                container1.appendChild(quoteContainer);
+                container1.appendChild(taskContainer);
             } else if (container2.childElementCount < 5) {
-                container2.appendChild(quoteContainer);
+                container2.appendChild(taskContainer);
             } else {
-                container3.appendChild(quoteContainer);
+                container3.appendChild(taskContainer);
             }
         }
 
-        // Function to add emoji to the custom quote input
+        // Function to add emoji to the custom task input
         function addEmoji(emoji) {
-            var customQuoteInput = document.getElementById("custom-quote-input");
-            customQuoteInput.value += emoji;
+            var customTaskInput = document.getElementById("custom-task-input");
+            customTaskInput.value += emoji;
         }
-
-        // Function to move to the next quote
-        function nextQuote() {
-            fetchQuote();
-        }
-
-        // Set an interval to automatically move to the next quote every 3 seconds
-        setInterval(nextQuote, 3000);
-
-        // Fetch the first quote on page load
-        fetchQuote();
     </script>
 </body>
 </html>
