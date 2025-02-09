@@ -244,6 +244,8 @@
     <div id="task-container">
         <p id="task"></p>
         <p id="author"></p>
+        <p id="date"></p>
+        <p id="day"></p>
     </div>
     <div class="button-container">
         <button id="copy-button">Copy Task</button>
@@ -435,10 +437,18 @@
             taskContainer.classList.add("user-task-container");
             var taskText = document.createElement("p");
             taskText.textContent = task;
-            var authorText = document.createElement("p");
-            authorText.innerHTML = "Submitted by: <span>You</span>";
+            var dateText = document.createElement("p");
+            dateText.textContent = new Date().toLocaleDateString();
+            var dayText = document.createElement("p");
+            dayText.textContent = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+            var progressButton = document.createElement("button");
+            progressButton.innerHTML = "⏩";
+            progressButton.onclick = () => moveTask(taskContainer);
+
             taskContainer.appendChild(taskText);
-            taskContainer.appendChild(authorText);
+            taskContainer.appendChild(dateText);
+            taskContainer.appendChild(dayText);
+            taskContainer.appendChild(progressButton);
 
             // Add the task to the first available container
             if (container1.childElementCount < 5) {
@@ -446,6 +456,19 @@
             } else if (container2.childElementCount < 5) {
                 container2.appendChild(taskContainer);
             } else {
+                container3.appendChild(taskContainer);
+            }
+        }
+
+        // Function to move task to the next column
+        function moveTask(taskContainer) {
+            const container1 = document.getElementById("user-tasks-1");
+            const container2 = document.getElementById("user-tasks-2");
+            const container3 = document.getElementById("user-tasks-3");
+
+            if (taskContainer.parentElement.id === "user-tasks-1") {
+                container2.appendChild(taskContainer);
+            } else if (taskContainer.parentElement.id === "user-tasks-2") {
                 container3.appendChild(taskContainer);
             }
         }
