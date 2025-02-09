@@ -1,95 +1,365 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Chatbot</title>
-    <link rel="stylesheet" type="text/css" href="style.css" />
-  </head>
-  <body>
-    <div id="chat-window">
-      <div class="main-title">CHAT BOT USING CHAT-GPT</div>
-      <div id="chat-messages"></div>
-      <form id="chat-form">
-        <input
-          type="text"
-          id="chat-input"
-          autocomplete="off"
-          placeholder="Type your message here"
-          required
-        />
-        <button type="submit">Send</button>
-      </form>
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.3/axios.min.js"></script>
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Under Construction</title>
-      <style>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager ✅</title>
+    <style>
+        /* General Styles */
         body {
-          font-family: Arial, sans-serif;
-          background-color: #f0f0f0;
-          text-align: center;
-          padding: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            transition: background 0.3s, color 0.3s;
         }
+
+        .dark-mode {
+            background: linear-gradient(135deg, #1e1e1e, #2e2e2e);
+            color: #fff;
+        }
+
         h1 {
-          font-size: 24px;
-          color: #555;
-          margin-bottom: 20px;
+            font-size: 2.5rem;
+            margin: 20px 0;
+            color: #0984e3;
         }
-        p {
-          font-size: 16px;
-          color: #777;
+
+        input, select, button {
+            font-size: 1rem;
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.3s ease;
         }
-      </style>
-    </head>
-    <body>
-      <h1>Website Under Construction</h1>
-      <p>We're currently working on bringing you an awesome website. Please check back soon!</p>
-    </body>
-    </html>
-    
+
+        input:focus, select:focus, button:focus {
+            box-shadow: 0 0 8px rgba(9, 132, 227, 0.6);
+        }
+
+        button {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-add {
+            background: #00b894;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #00997b;
+        }
+
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #0984e3;
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Container and Columns */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px auto;
+            max-width: 600px;
+            padding: 20px;
+        }
+
+        .column {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .dark-mode .column {
+            background: rgba(46, 46, 46, 0.9);
+        }
+
+        .column:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .column h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #0984e3;
+        }
+
+        /* Task Styles */
+        .task {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: grab;
+        }
+
+        .dark-mode .task {
+            background: #2e2e2e;
+            color: #fff;
+        }
+
+        .task:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .task.completed {
+            background: #76c893;
+            color: white;
+        }
+
+        .task p {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .task .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #d63031;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .task .delete-btn:hover {
+            background: #b02323;
+        }
+
+        .task .edit-btn {
+            position: absolute;
+            top: 10px;
+            right: 40px;
+            background: #0984e3;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .task .edit-btn:hover {
+            background: #0768b2;
+        }
+
+        /* Timer Styles */
+        .timer {
+            margin-top: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #0984e3;
+        }
+
+        .timer-controls button {
+            background: #0984e3;
+            color: white;
+            padding: 5px 10px;
+            margin: 2px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .timer-controls button:hover {
+            background: #0768b2;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌅</button>
+
+    <h1>Task Manager ✅</h1>
+    <input type="text" id="task-input" placeholder="Enter a task...">
+    <select id="priority-input">
+        <option value="🔴">🔴</option>
+        <option value="🟡">🟡</option>
+        <option value="🟢">🟢</option>
+    </select>
+    <button class="btn-add" onclick="addTask()">Add Task</button>
+
+    <div class="container">
+        <div class="column" id="todo">
+            <h2>📝 To-Do</h2>
+        </div>
+        <div class="column" id="in-progress">
+            <h2>🚀 In Progress</h2>
+        </div>
+        <div class="column" id="done">
+            <h2>✅ Done</h2>
+        </div>
+    </div>
+
     <script>
-            const form = document.getElementById("chat-form");
-            const input = document.getElementById("chat-input");
-            const messages = document.getElementById("chat-messages");
-            const apiKey = "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";
+        // Drag and drop functionality
+        let draggedTask = null;
 
-            form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const message = input.value;
-            input.value = "";
-
-            messages.innerHTML += `<div class="message user-message">
-            <img src="./icons/user.png" alt="user icon"> <span>${message}</span>
-            </div>`;
-
-            // Use axios library to make a POST request to the OpenAI API
-            const response = await axios.post(
-                "https://api.openai.com/v1/completions",
-                {
-                prompt: message,
-                model: "text-davinci-003",
-                temperature: 0,
-                max_tokens: 1000,
-                top_p: 1,
-                frequency_penalty: 0.0,
-                presence_penalty: 0.0,
-                },
-                {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${apiKey}`,
-                },
-                }
-            );
-            const chatbotResponse = response.data.choices[0].text;
-
-            messages.innerHTML += `<div class="message bot-message">
-            <img src="./icons/chatbot.png" alt="bot icon"> <span>${chatbotResponse}</span>
-            </div>`;
+        document.querySelectorAll('.column').forEach(column => {
+            column.addEventListener('dragover', e => {
+                e.preventDefault();
+                column.style.backgroundColor = '#f0f0f0';
             });
+
+            column.addEventListener('dragleave', () => {
+                column.style.backgroundColor = '';
+            });
+
+            column.addEventListener('drop', () => {
+                column.style.backgroundColor = '';
+                if (draggedTask) {
+                    column.appendChild(draggedTask);
+                    saveTasks();
+                }
+            });
+        });
+
+        document.addEventListener('dragstart', e => {
+            if (e.target.classList.contains('task')) {
+                draggedTask = e.target;
+                setTimeout(() => e.target.style.display = 'none', 0);
+            }
+        });
+
+        document.addEventListener('dragend', e => {
+            if (e.target.classList.contains('task')) {
+                e.target.style.display = 'block';
+                draggedTask = null;
+            }
+        });
+
+        // Edit task functionality
+        function editTask(button) {
+            const task = button.closest('.task');
+            const taskText = task.querySelector('p').innerText;
+            const newText = prompt('Edit your task:', taskText);
+            if (newText !== null && newText.trim() !== '') {
+                task.querySelector('p').innerText = newText;
+                saveTasks();
+            }
+        }
+
+        // Delete task functionality
+        function deleteTask(button) {
+            const task = button.closest('.task');
+            task.remove();
+            saveTasks();
+        }
+
+        // Dark mode
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+            localStorage.setItem("darkMode", document.body.classList.contains("dark-mode") ? "enabled" : "disabled");
+        }
+
+        function loadDarkMode() {
+            if (localStorage.getItem("darkMode") === "enabled") {
+                document.body.classList.add("dark-mode");
+            }
+        }
+
+        // Task management
+        function saveTasks() {
+            const columns = ['todo', 'in-progress', 'done'];
+            let tasks = {};
+            columns.forEach(col => {
+                tasks[col] = Array.from(document.getElementById(col).children).slice(1).map(task => {
+                    return {
+                        text: task.querySelector("p").innerText,
+                        completed: task.classList.contains("completed"),
+                        timer: task.querySelector(".timer").innerText
+                    };
+                });
+            });
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+
+        function loadTasks() {
+            const tasks = JSON.parse(localStorage.getItem("tasks")) || {};
+            Object.keys(tasks).forEach(col => {
+                tasks[col].forEach(taskData => {
+                    let task = document.createElement("div");
+                    task.classList.add("task");
+                    if (taskData.completed) task.classList.add("completed");
+                    task.setAttribute('draggable', true);
+                    task.innerHTML = `
+                        <p>${taskData.text}</p>
+                        <div class="timer">${taskData.timer}</div>
+                        <div class="timer-controls">
+                            <button onclick="startTimer(this)">▶️</button>
+                            <button onclick="pauseTimer(this)">⏸️</button>
+                            <button onclick="resetTimer(this)">🔄</button>
+                        </div>
+                        <button class="delete-btn" onclick="deleteTask(this)">✖️</button>
+                        <button class="edit-btn" onclick="editTask(this)">✏️</button>
+                    `;
+                    document.getElementById(col).appendChild(task);
+                });
+            });
+        }
+
+        function addTask() {
+            let taskText = document.getElementById("task-input").value;
+            let priority = document.getElementById("priority-input").value;
+            if (!taskText) return alert("Please enter a task!");
+
+            let task = document.createElement("div");
+            task.classList.add("task");
+            task.setAttribute('draggable', true);
+            task.innerHTML = `
+                <p>${priority} ${taskText}</p>
+                <div class="timer">00:00</div>
+                <div class="timer-controls">
+                    <button onclick="startTimer(this)">▶️</button>
+                    <button onclick="pauseTimer(this)">⏸️</button>
+                    <button onclick="resetTimer(this)">🔄</button>
+                </div>
+                <button class="delete-btn" onclick="deleteTask(this)">✖️</button>
+                <button class="edit-btn" onclick="editTask(this)">✏️</button>
+            `;
+            document.getElementById("todo").appendChild(task);
+            document.getElementById("task-input").value = "";
+            saveTasks();
+        }
+
+        loadDarkMode();
+        loadTasks();
     </script>
 </body>
 </html>
