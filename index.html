@@ -16,19 +16,10 @@
         }
         
         header {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            width: 80%;
-            z-index: 1000;
+            margin-bottom: 20px;
         }
 
         header h1 {
@@ -67,7 +58,6 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
             transition: background-color 0.3s ease, transform 0.3s ease;
             cursor: pointer;
-            margin-top: 100px;
         }
 
         .highlight {
@@ -144,9 +134,6 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
             text-align: left;
             transition: transform 0.3s ease;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
         .user-task-container:hover {
@@ -217,7 +204,7 @@
 </head>
 <body>
     <header>
-        <h1>Test 5</h1>
+        <h1>Test4</h1>
         <nav>
             <ul>
                 <li><a href="shayari.html" class="links">Shayari🪶</a></li>
@@ -321,11 +308,7 @@
         document.getElementById("submit-custom-task").addEventListener("click", function() {
             var customTask = document.getElementById("custom-task-input").value;
             if (customTask) {
-                if (customTask.split('\n').length > 1) {
-                    customTask.split('\n').forEach(task => addCustomTask(task.trim()));
-                } else {
-                    addCustomTask(customTask);
-                }
+                addCustomTask(customTask);
                 hideCustomTaskForm();
             }
         });
@@ -375,9 +358,9 @@
             taskContainer.appendChild(timerControls);
 
             // Add the task to the first available container
-            if (container1.childElementCount < 200) {
+            if (container1.childElementCount < 5) {
                 container1.appendChild(taskContainer);
-            } else if (container2.childElementCount < 200) {
+            } else if (container2.childElementCount < 5) {
                 container2.appendChild(taskContainer);
             } else {
                 container3.appendChild(taskContainer);
@@ -435,10 +418,8 @@
 
         // Function to update the task container with task and date
         function updateTaskContainer(task, date) {
-            const today = new Date();
-            const day = today.toLocaleDateString('en-GB', { weekday: 'long' });
             document.getElementById('task').textContent = task;
-            document.getElementById('date').textContent = `${day}, ${date}`;
+            document.getElementById('date').textContent = date;
         }
 
         // Function to generate a random light background color
