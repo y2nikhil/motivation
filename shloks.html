@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProTask Matrix</title>
+    <title>ProTask Matrix 2.0</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --primary: #2A2F4F;
@@ -11,6 +12,7 @@
             --accent: #E5BEEC;
             --background: #FDE2F3;
             --text: #2A2F4F;
+            --task-bg: rgba(255, 255, 255, 0.9);
         }
 
         body {
@@ -21,31 +23,32 @@
             padding: 20px;
         }
 
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
         .container {
             display: flex;
-            justify-content: space-around;
-            gap: 2%;
-            margin-top: 30px;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 20px;
         }
 
         .column {
-            width: 30%;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 25px;
+            min-width: 320px;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
             border-radius: 16px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
-            min-height: 70vh;
-            transition: transform 0.3s ease;
-        }
-
-        .column:hover {
-            transform: translateY(-5px);
         }
 
         .column h2 {
             color: var(--primary);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             font-weight: 600;
             position: relative;
         }
@@ -61,7 +64,7 @@
         }
 
         .task {
-            background: white;
+            background: var(--task-bg);
             padding: 20px;
             margin: 15px 0;
             border-radius: 12px;
@@ -89,12 +92,47 @@
             margin-left: 25px;
         }
 
-        .task-actions {
+        .task-content p {
+            margin: 0;
+            font-size: 1.1em;
+        }
+
+        .task-content small {
+            display: block;
+            margin-top: 5px;
+            color: var(--secondary);
+            font-size: 0.9em;
+        }
+
+        .task-controls {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .move-btn {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+        }
+
+        .settings-menu {
             position: absolute;
             top: 15px;
             right: 15px;
+            display: none;
+            gap: 8px;
+            background: white;
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-trigger:hover + .settings-menu,
+        .settings-menu:hover {
             display: flex;
-            gap: 10px;
         }
 
         .action-btn {
@@ -152,11 +190,38 @@
             transform: translateY(-2px);
         }
 
+        .calendar-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid var(--secondary);
+            border-radius: 16px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
             }
-            
+
             .column {
                 width: 100%;
                 margin-bottom: 25px;
@@ -165,7 +230,7 @@
     </style>
 </head>
 <body>
-    <h1 style="text-align: center; color: var(--primary); margin-bottom: 10px;">ProTask Matrix</h1>
+    <h1>ProTask Matrix 2.0</h1>
     <div style="text-align: center; margin-bottom: 30px;">
         <input type="text" id="task-input" placeholder="Enter task...">
         <select id="priority-input">
@@ -174,6 +239,15 @@
             <option value="#2ed573">Low</option>
         </select>
         <button class="primary" onclick="addTask()">Add Task</button>
+        <button class="primary" onclick="openCalendar()">
+            <i class="fas fa-calendar-plus"></i> Schedule Task
+        </button>
+        <button class="primary" onclick="toggleDarkMode()">
+            <i class="fas fa-moon"></i>
+        </button>
+        <button class="primary" onclick="shareSnapshot()">
+            <i class="fas fa-share"></i>
+        </button>
     </div>
 
     <div class="container">
@@ -188,6 +262,15 @@
         </div>
     </div>
 
+    <!-- Calendar Modal -->
+    <div class="overlay" onclick="closeCalendar()"></div>
+    <div class="calendar-modal">
+        <h2>Schedule Task</h2>
+        <input type="datetime-local" id="task-datetime">
+        <input type="text" id="task-for-date" placeholder="Enter task...">
+        <button class="primary" onclick="addScheduledTask()">Schedule</button>
+    </div>
+
     <script>
         // Timer functionality
         let timers = {};
@@ -195,21 +278,20 @@
         function startTimer(button) {
             const timerDisplay = button.parentElement.previousElementSibling;
             const taskId = button.closest('.task').id;
-            
+
             if (timers[taskId]) {
                 clearInterval(timers[taskId]);
             }
 
             let [minutes, seconds] = timerDisplay.textContent.split(':').map(Number);
-            
+
             timers[taskId] = setInterval(() => {
                 seconds++;
                 if (seconds === 60) {
                     seconds = 0;
                     minutes++;
                 }
-                timerDisplay.textContent = 
-                    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             }, 1000);
         }
 
@@ -226,26 +308,28 @@
         }
 
         // Task management
-        function createTaskElement(text, priorityColor) {
+        function createTaskElement(text, priorityColor, dueDate) {
             const task = document.createElement('div');
             task.className = 'task';
             task.id = `task-${Date.now()}`;
+            task.draggable = true;
             task.innerHTML = `
                 <div class="priority-dot" style="background: ${priorityColor}"></div>
                 <div class="task-content">
                     <p>${text}</p>
-                    <div class="timer">00:00</div>
-                    <div class="timer-controls">
+                    ${dueDate ? `<small>Due: ${new Date(dueDate).toLocaleString()}</small>` : ''}
+                    <div class="task-controls">
                         <button class="action-btn" onclick="startTimer(this)">▶️</button>
                         <button class="action-btn" onclick="pauseTimer(this)">⏸️</button>
                         <button class="action-btn" onclick="resetTimer(this)">🔄</button>
                     </div>
                 </div>
-                <div class="task-actions">
-                    <button class="action-btn" onclick="moveTask(this)">⇓</button>
+                <button class="action-btn move-btn" onclick="moveTask(this)">➡️</button>
+                <div class="settings-menu">
                     <button class="action-btn" onclick="editTask(this)">✏️</button>
                     <button class="action-btn" onclick="deleteTask(this)">✖️</button>
                 </div>
+                <button class="action-btn settings-trigger">⚙️</button>
             `;
             return task;
         }
@@ -253,12 +337,24 @@
         function addTask() {
             const taskText = document.getElementById('task-input').value.trim();
             const priorityColor = document.getElementById('priority-input').value;
-            
+
             if (!taskText) return alert('Please enter a task!');
-            
+
             const task = createTaskElement(taskText, priorityColor);
             document.getElementById('todo').appendChild(task);
             document.getElementById('task-input').value = '';
+            saveTasks();
+        }
+
+        function addScheduledTask() {
+            const taskText = document.getElementById('task-for-date').value.trim();
+            const dueDateTime = document.getElementById('task-datetime').value;
+
+            if (!taskText || !dueDateTime) return alert('Please fill all fields!');
+
+            const task = createTaskElement(taskText, document.getElementById('priority-input').value, dueDateTime);
+            document.getElementById('todo').appendChild(task);
+            closeCalendar();
             saveTasks();
         }
 
@@ -267,7 +363,7 @@
             const currentColumn = task.parentElement.id;
             const columns = ['todo', 'in-progress', 'done'];
             const nextColumn = columns[(columns.indexOf(currentColumn) + 1) % columns.length];
-            
+
             document.getElementById(nextColumn).appendChild(task);
             saveTasks();
         }
@@ -276,7 +372,7 @@
             const task = button.closest('.task');
             const currentText = task.querySelector('p').textContent;
             const newText = prompt('Edit task:', currentText);
-            
+
             if (newText !== null) {
                 task.querySelector('p').textContent = newText;
                 saveTasks();
@@ -286,6 +382,53 @@
         function deleteTask(button) {
             button.closest('.task').remove();
             saveTasks();
+        }
+
+        // Drag & Drop
+        let draggedTask = null;
+
+        document.querySelectorAll('.column').forEach(column => {
+            column.addEventListener('dragover', e => {
+                e.preventDefault();
+                column.style.backgroundColor = 'rgba(0,0,0,0.05)';
+            });
+
+            column.addEventListener('dragleave', () => {
+                column.style.backgroundColor = '';
+            });
+
+            column.addEventListener('drop', () => {
+                column.style.backgroundColor = '';
+                if (draggedTask) {
+                    column.appendChild(draggedTask);
+                    saveTasks();
+                }
+            });
+        });
+
+        document.addEventListener('dragstart', e => {
+            if (e.target.classList.contains('task')) {
+                draggedTask = e.target;
+                setTimeout(() => e.target.style.opacity = '0.5', 0);
+            }
+        });
+
+        document.addEventListener('dragend', e => {
+            if (e.target.classList.contains('task')) {
+                e.target.style.opacity = '1';
+                draggedTask = null;
+            }
+        });
+
+        // Calendar
+        function openCalendar() {
+            document.querySelector('.calendar-modal').style.display = 'block';
+            document.querySelector('.overlay').style.display = 'block';
+        }
+
+        function closeCalendar() {
+            document.querySelector('.calendar-modal').style.display = 'none';
+            document.querySelector('.overlay').style.display = 'none';
         }
 
         // Persistence
@@ -301,7 +444,8 @@
                 serialized[column] = tasks.map(task => ({
                     text: task.querySelector('p').textContent,
                     priority: task.querySelector('.priority-dot').style.backgroundColor,
-                    timer: task.querySelector('.timer').textContent
+                    timer: task.querySelector('.timer').textContent,
+                    dueDate: task.querySelector('small')?.textContent.replace('Due: ', '')
                 }));
             }
 
@@ -310,11 +454,11 @@
 
         function loadTasks() {
             const saved = JSON.parse(localStorage.getItem('tasks')) || {};
-            
+
             for (const [column, tasks] of Object.entries(saved)) {
                 const container = document.getElementById(column);
                 tasks.forEach(taskData => {
-                    const task = createTaskElement(taskData.text, taskData.priority);
+                    const task = createTaskElement(taskData.text, taskData.priority, taskData.dueDate);
                     task.querySelector('.timer').textContent = taskData.timer;
                     container.appendChild(task);
                 });
