@@ -5,26 +5,35 @@
     <style>
         /* Timer styles */
         #timer-container {
-            display: none;
+            display: flex;
             position: fixed;
             bottom: 10px;
             right: 10px;
             background: rgba(0, 0, 0, 0.8);
-            color: white;
+            color: #fff;
             padding: 10px;
             border-radius: 10px;
             z-index: 1000;
             margin-bottom: 10px;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        #timer-container:hover {
+            background-color: rgba(0, 0, 0, 1);
+            transform: scale(1.05);
         }
 
         .timer {
             font-size: 20px;
+            margin-bottom: 10px;
         }
 
         .timer-controls {
             display: flex;
             justify-content: space-around;
-            margin-top: 10px;
+            width: 100%;
         }
 
         .timer-controls button {
@@ -35,6 +44,7 @@
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            font-size: 18px;
         }
 
         .timer-controls button:hover {
@@ -243,9 +253,7 @@
     </header>
     <div id="task-container">
         <p id="task"></p>
-        <p id="author"></p>
         <p id="date"></p>
-        <p id="day"></p>
     </div>
     <div class="button-container">
         <button id="copy-button">Copy Task</button>
@@ -312,15 +320,15 @@
             timerControls.className = 'timer-controls';
 
             const pauseButton = document.createElement('button');
-            pauseButton.textContent = 'Pause';
+            pauseButton.textContent = '▶️';
             pauseButton.onclick = () => pauseTimer(activeTimers);
 
             const resumeButton = document.createElement('button');
-            resumeButton.textContent = 'Resume';
+            resumeButton.textContent = '🔄';
             resumeButton.onclick = () => resumeTimer(activeTimers);
 
             const cancelButton = document.createElement('button');
-            cancelButton.textContent = 'Cancel';
+            cancelButton.textContent = '✖️';
             cancelButton.onclick = () => cancelTimer(activeTimers);
 
             timerControls.appendChild(pauseButton);
@@ -435,19 +443,14 @@
 
             var taskContainer = document.createElement("div");
             taskContainer.classList.add("user-task-container");
+            taskContainer.style.backgroundColor = getRandomColor();
             var taskText = document.createElement("p");
             taskText.textContent = task;
-            var dateText = document.createElement("p");
-            dateText.textContent = new Date().toLocaleDateString();
-            var dayText = document.createElement("p");
-            dayText.textContent = new Date().toLocaleDateString('en-US', { weekday: 'long' });
             var progressButton = document.createElement("button");
             progressButton.innerHTML = "⏩";
             progressButton.onclick = () => moveTask(taskContainer);
 
             taskContainer.appendChild(taskText);
-            taskContainer.appendChild(dateText);
-            taskContainer.appendChild(dayText);
             taskContainer.appendChild(progressButton);
 
             // Add the task to the first available container
@@ -458,6 +461,8 @@
             } else {
                 container3.appendChild(taskContainer);
             }
+
+            updateTaskContainer(task, new Date().toLocaleDateString('en-GB'));
         }
 
         // Function to move task to the next column
@@ -477,6 +482,20 @@
         function addEmoji(emoji) {
             var customTaskInput = document.getElementById("custom-task-input");
             customTaskInput.value += emoji;
+        }
+
+        // Function to update the task container with task and date
+        function updateTaskContainer(task, date) {
+            document.getElementById('task').textContent = task;
+            document.getElementById('date').textContent = date;
+        }
+
+        // Function to generate a random light background color
+        function getRandomColor() {
+            var r = Math.floor(Math.random() * 156) + 100;
+            var g = Math.floor(Math.random() * 156) + 100;
+            var b = Math.floor(Math.random() * 156) + 100;
+            return `rgb(${r}, ${g}, ${b})`;
         }
     </script>
 </body>
