@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test3</title>
+    <title>Task Manager </title>
     <style>
         /* General Styles */
         body {
@@ -200,13 +200,38 @@
         .timer-controls button:hover {
             background: #0768b2;
         }
+
+        /* Share Button */
+        .share-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #0984e3;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+
+        .share-btn:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
 
     <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌅</button>
+    <button class="share-btn" onclick="shareSnapshot()">⤴️</button>
 
-    <h1>Task Manager ✅</h1>
+    <h1>Task Manager </h1>
     <input type="text" id="task-input" placeholder="Enter a task...">
     <select id="priority-input">
         <option value="🔴">🔴</option>
@@ -278,6 +303,28 @@
                     saveTasks();
                 }
             });
+
+            // Touch events for mobile
+            column.addEventListener('touchmove', e => {
+                e.preventDefault();
+                if (draggedTask) {
+                    const touch = e.touches[0];
+                    draggedTask.style.position = 'absolute';
+                    draggedTask.style.left = `${touch.clientX - draggedTask.offsetWidth / 2}px`;
+                    draggedTask.style.top = `${touch.clientY - draggedTask.offsetHeight / 2}px`;
+                }
+            });
+
+            column.addEventListener('touchend', () => {
+                if (draggedTask) {
+                    column.appendChild(draggedTask);
+                    draggedTask.style.position = '';
+                    draggedTask.style.left = '';
+                    draggedTask.style.top = '';
+                    draggedTask = null;
+                    saveTasks();
+                }
+            });
         });
 
         document.addEventListener('dragstart', e => {
@@ -293,6 +340,23 @@
                 draggedTask = null;
             }
         });
+
+        document.addEventListener('touchstart', e => {
+            if (e.target.classList.contains('task')) {
+                draggedTask = e.target;
+            }
+        });
+
+        // Share snapshot functionality
+        function shareSnapshot() {
+            html2canvas(document.body).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = imgData;
+                link.download = `task-manager-snapshot-${new Date().toISOString()}.png`;
+                link.click();
+            });
+        }
 
         // Edit task functionality
         function editTask(button) {
@@ -391,5 +455,6 @@
         loadDarkMode();
         loadTasks();
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
