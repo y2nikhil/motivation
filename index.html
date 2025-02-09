@@ -357,17 +357,7 @@
             taskContainer.appendChild(timer);
             taskContainer.appendChild(timerControls);
 
-            // Add the task to the first available container
-            if (container1.childElementCount < 5) {
-                container1.appendChild(taskContainer);
-            } else if (container2.childElementCount < 5) {
-                container2.appendChild(taskContainer);
-            } else {
-                container3.appendChild(taskContainer);
-            }
-
-            updateTaskContainer(task, new Date().toLocaleDateString('en-GB'));
-        }
+  
 
         // Timer functions
         function startTimer(timer) {
