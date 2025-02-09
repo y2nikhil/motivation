@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Productivity Journey</title>
     <style>
         /* Timer styles */
@@ -242,7 +244,7 @@
 </head>
 <body>
     <header>
-        <h1>Productivity</h1>
+        <h1>Productivity Journey</h1>
         <nav>
             <ul>
                 <li><a href="shayari.html" class="links">Shayari🪶</a></li>
@@ -305,81 +307,47 @@
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
-        let activeTimers = 0;
+        let timerInterval;
+        let time = 0;
+        let isPaused = false;
 
-        function createTimer() {
-            const timerContainer = document.createElement('div');
-            timerContainer.className = 'timer-container';
-            timerContainer.id = `timer-container-${activeTimers}`;
-            const timer = document.createElement('div');
-            timer.className = 'timer';
-            timer.id = `timer-${activeTimers}`;
-            timer.textContent = '00:00';
-
-            const timerControls = document.createElement('div');
-            timerControls.className = 'timer-controls';
-
-            const pauseButton = document.createElement('button');
-            pauseButton.textContent = '▶️';
-            pauseButton.onclick = () => pauseTimer(activeTimers);
-
-            const resumeButton = document.createElement('button');
-            resumeButton.textContent = '🔄';
-            resumeButton.onclick = () => resumeTimer(activeTimers);
-
-            const cancelButton = document.createElement('button');
-            cancelButton.textContent = '✖️';
-            cancelButton.onclick = () => cancelTimer(activeTimers);
-
-            timerControls.appendChild(pauseButton);
-            timerControls.appendChild(resumeButton);
-            timerControls.appendChild(cancelButton);
-
-            timerContainer.appendChild(timer);
-            timerContainer.appendChild(timerControls);
-            document.body.appendChild(timerContainer);
-
-            startTimer(activeTimers);
-            activeTimers++;
+        function updateDisplay() {
+            let minutes = Math.floor(time / 60);
+            let seconds = time % 60;
+            document.getElementById('timer').innerText = 
+                String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
         }
 
-        let timers = {};
-
-        function startTimer(timerId) {
-            let seconds = 0;
-            timers[timerId] = setInterval(() => {
-                seconds++;
-                document.getElementById(`timer-${timerId}`).textContent = formatTime(seconds);
-            }, 1000);
+        function startTimer() {
+            if (!timerInterval) {
+                timerInterval = setInterval(() => {
+                    if (!isPaused) {
+                        time++;
+                        updateDisplay();
+                    }
+                }, 1000);
+            }
         }
 
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        function pauseTimer() {
+            isPaused = !isPaused;
         }
 
-        function pauseTimer(timerId) {
-            clearInterval(timers[timerId]);
+        function restartTimer() {
+            time = 0;
+            isPaused = false;
+            updateDisplay();
         }
 
-        function resumeTimer(timerId) {
-            let currentTime = document.getElementById(`timer-${timerId}`).textContent;
-            let [mins, secs] = currentTime.split(':').map(Number);
-            let totalSeconds = mins * 60 + secs;
-
-            timers[timerId] = setInterval(() => {
-                totalSeconds++;
-                document.getElementById(`timer-${timerId}`).textContent = formatTime(totalSeconds);
-            }, 1000);
+        function cancelTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            time = 0;
+            isPaused = false;
+            updateDisplay();
         }
 
-        function cancelTimer(timerId) {
-            clearInterval(timers[timerId]);
-            document.getElementById(`timer-container-${timerId}`).remove();
-        }
-
-        document.getElementById('start-timer-button').addEventListener('click', createTimer);
+        document.getElementById('start-timer-button').addEventListener('click', startTimer);
 
         // Function to copy task
         function copyTask() {
@@ -393,18 +361,13 @@
 
         // Function to share task
         function shareTask() {
-            const taskText = document.getElementById('task').textContent;
-            const shareText = `"${taskText}"`;
-            const shareURL = window.location.href;
-            const shareMessage = `${shareText} ${shareURL}`;
-            if (navigator.share) {
-                navigator.share({
-                    title: "Task",
-                    text: shareMessage
-                }).catch(error => console.log(error));
-            } else {
-                console.log("Sharing not supported");
-            }
+            const taskContainer = document.getElementById('user-tasks-container');
+            html2canvas(taskContainer).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'task_list.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
         }
 
         // Show the custom task form
@@ -449,9 +412,13 @@
             var progressButton = document.createElement("button");
             progressButton.innerHTML = "⏩";
             progressButton.onclick = () => moveTask(taskContainer);
+            var removeButton = document.createElement("button");
+            removeButton.innerHTML = "✖️";
+            removeButton.onclick = () => taskContainer.remove();
 
             taskContainer.appendChild(taskText);
             taskContainer.appendChild(progressButton);
+            taskContainer.appendChild(removeButton);
 
             // Add the task to the first available container
             if (container1.childElementCount < 5) {
@@ -497,6 +464,13 @@
             var b = Math.floor(Math.random() * 156) + 100;
             return `rgb(${r}, ${g}, ${b})`;
         }
+
+        // Display today's date and day in the task container by default
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const date = today.toLocaleDateString('en-GB');
+            updateTaskContainer('Your task for today', date);
+        });
     </script>
 </body>
 </html>
