@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Manager </title>
+    <title>Test3</title>
     <style>
         /* General Styles */
         body {
@@ -228,6 +228,36 @@
     </div>
 
     <script>
+        // Timer functionality
+        function startTimer(button) {
+            const timerDisplay = button.parentElement.previousElementSibling;
+            let time = timerDisplay.innerText.split(':');
+            let minutes = parseInt(time[0]);
+            let seconds = parseInt(time[1]);
+
+            const timer = setInterval(() => {
+                seconds++;
+                if (seconds === 60) {
+                    seconds = 0;
+                    minutes++;
+                }
+                timerDisplay.innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+
+            // Store the timer ID in the button for pausing
+            button.timerId = timer;
+        }
+
+        function pauseTimer(button) {
+            clearInterval(button.timerId);
+        }
+
+        function resetTimer(button) {
+            const timerDisplay = button.parentElement.previousElementSibling;
+            timerDisplay.innerText = '00:00';
+            clearInterval(button.timerId);
+        }
+
         // Drag and drop functionality
         let draggedTask = null;
 
