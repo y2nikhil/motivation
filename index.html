@@ -5,59 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Productivity Journey</title>
     <style>
-        /* Timer styles */
-        #timer-container {
-            display: flex;
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            padding: 10px;
-            border-radius: 10px;
-            z-index: 1000;
-            margin-bottom: 10px;
-            flex-direction: column;
-            align-items: center;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-        #timer-container:hover {
-            background-color: rgba(0, 0, 0, 1);
-            transform: scale(1.05);
-        }
-
-        .timer {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .timer-controls {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-        }
-
-        .timer-controls button {
-            background-color: #555;
-            color: #fff;
-            border: none;
-            padding: 5px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 18px;
-        }
-
-        .timer-controls button:hover {
-            background-color: #777;
-        }
-
         body {
             text-align: center;
             padding: 50px;
             font-family: Arial, sans-serif;
-            background-image: url('https://images.saymedia-content.com/.image/t_share/MTkyOTkyMzE2OTQ3MjQ0MjUz/website-background-templates.jpg'); /* Replace with the provided background image URL */
+            background-image: url('https://images.saymedia-content.com/.image/t_share/MTkyOTkyMzE2OTQ3MjQ0MjUz/website-background-templates.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -101,16 +53,11 @@
         #task-container {
             display: inline-block;
             padding: 20px;
-            background-color: #4E4FEB;
+            background-color: #EFEFEF;
             border-radius: 20px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
             transition: background-color 0.3s ease, transform 0.3s ease;
             cursor: pointer;
-        }
-
-        #task-container:hover {
-            background-color: #5D5EEB;
-            transform: scale(1.05);
         }
 
         .highlight {
@@ -224,10 +171,12 @@
         .user-tasks-box:hover {
             transform: scale(1.05);
         }
+        
         .links {
             text-decoration: none;
             color: #000;
         }
+        
         .user-tasks-box p {
             font-size: 18px;
             line-height: 1.5;
@@ -235,16 +184,27 @@
             transition: transform 0.3s ease;
         }
 
-        #start-timer-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
+        .timer-controls button {
+            background-color: #555;
+            color: #fff;
+            border: none;
+            padding: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 18px;
+            margin: 5px;
         }
+
+        .timer-controls button:hover {
+            background-color: #777;
+        }
+
     </style>
 </head>
 <body>
     <header>
-        <h1>Test3</h1>
+        <h1>Test4</h1>
         <nav>
             <ul>
                 <li><a href="shayari.html" class="links">Shayari🪶</a></li>
@@ -254,7 +214,6 @@
         </nav>
     </header>
     <div id="task-container">
-        <p id="task"></p>
         <p id="date"></p>
     </div>
     <div class="button-container">
@@ -303,52 +262,8 @@
         </div>
     </div>
 
-    <button id="start-timer-button">Start Timer</button>
-
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
-        let timerInterval;
-        let time = 0;
-        let isPaused = false;
-
-        function updateDisplay() {
-            let minutes = Math.floor(time / 60);
-            let seconds = time % 60;
-            document.getElementById('timer').innerText = 
-                String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
-        }
-
-        function startTimer() {
-            if (!timerInterval) {
-                timerInterval = setInterval(() => {
-                    if (!isPaused) {
-                        time++;
-                        updateDisplay();
-                    }
-                }, 1000);
-            }
-        }
-
-        function pauseTimer() {
-            isPaused = !isPaused;
-        }
-
-        function restartTimer() {
-            time = 0;
-            isPaused = false;
-            updateDisplay();
-        }
-
-        function cancelTimer() {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            time = 0;
-            isPaused = false;
-            updateDisplay();
-        }
-
-        document.getElementById('start-timer-button').addEventListener('click', startTimer);
-
         // Function to copy task
         function copyTask() {
             const taskText = document.getElementById('task').textContent;
@@ -416,9 +331,31 @@
             removeButton.innerHTML = "✖️";
             removeButton.onclick = () => taskContainer.remove();
 
+            // Timer elements
+            var timer = document.createElement("div");
+            timer.className = 'timer';
+            timer.textContent = '00:00';
+            var timerControls = document.createElement("div");
+            timerControls.className = 'timer-controls';
+            var startButton = document.createElement("button");
+            startButton.innerHTML = "▶️";
+            startButton.onclick = () => startTimer(timer);
+            var pauseButton = document.createElement("button");
+            pauseButton.innerHTML = "⏸️";
+            pauseButton.onclick = () => pauseTimer(timer);
+            var resetButton = document.createElement("button");
+            resetButton.innerHTML = "🔄";
+            resetButton.onclick = () => resetTimer(timer);
+
+            timerControls.appendChild(startButton);
+            timerControls.appendChild(pauseButton);
+            timerControls.appendChild(resetButton);
+
             taskContainer.appendChild(taskText);
             taskContainer.appendChild(progressButton);
             taskContainer.appendChild(removeButton);
+            taskContainer.appendChild(timer);
+            taskContainer.appendChild(timerControls);
 
             // Add the task to the first available container
             if (container1.childElementCount < 5) {
@@ -430,6 +367,34 @@
             }
 
             updateTaskContainer(task, new Date().toLocaleDateString('en-GB'));
+        }
+
+        // Timer functions
+        function startTimer(timer) {
+            if (!timer.interval) {
+                timer.interval = setInterval(() => {
+                    timer.time = (timer.time || 0) + 1;
+                    updateTimerDisplay(timer);
+                }, 1000);
+            }
+        }
+
+        function pauseTimer(timer) {
+            clearInterval(timer.interval);
+            timer.interval = null;
+        }
+
+        function resetTimer(timer) {
+            clearInterval(timer.interval);
+            timer.interval = null;
+            timer.time = 0;
+            updateTimerDisplay(timer);
+        }
+
+        function updateTimerDisplay(timer) {
+            const minutes = Math.floor(timer.time / 60);
+            const seconds = timer.time % 60;
+            timer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
 
         // Function to move task to the next column
@@ -469,7 +434,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const today = new Date();
             const date = today.toLocaleDateString('en-GB');
-            updateTaskContainer('Your task for today', date);
+            updateTaskContainer('', date);
         });
     </script>
 </body>
