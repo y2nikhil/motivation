@@ -14,9 +14,11 @@
             --cyber-gray: #1a1a24;
             --cyber-red: #ff003c;
             --cyber-green: #00ff88;
+            --light-bg: #f4f4f4;
+            --light-text: #333;
         }
 
-        /* Cyberpunk Base Styles */
+        /* Base Styles */
         body {
             font-family: 'Exo 2', sans-serif;
             background: var(--cyber-black);
@@ -25,6 +27,11 @@
             padding: 0;
             min-height: 100vh;
             overflow-x: hidden;
+        }
+
+        body.light-mode {
+            background: var(--light-bg);
+            color: var(--light-text);
         }
 
         h1 {
@@ -36,78 +43,17 @@
             letter-spacing: 2px;
         }
 
-        /* Cyberpunk Glow Effect */
-        .cyber-glow {
-            box-shadow: 0 0 15px var(--neon-blue),
-                        inset 0 0 10px var(--neon-blue);
-        }
-
-        /* Input Fields */
-        input, select {
-            background: var(--cyber-gray);
-            border: 2px solid var(--neon-blue);
-            color: var(--neon-blue);
-            padding: 12px;
-            margin: 8px;
-            border-radius: 4px;
-            font-family: 'Exo 2', sans-serif;
-            transition: all 0.3s ease;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            box-shadow: 0 0 15px var(--neon-blue);
-        }
-
-        /* Buttons */
-        button {
-            background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
-            border: none;
-            color: black;
-            padding: 12px 24px;
-            margin: 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: 'Orbitron', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        button::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, 
-                transparent, 
-                rgba(255,255,255,0.2), 
-                transparent);
-            transform: rotate(45deg);
-            transition: all 0.5s;
-        }
-
-        button:hover::before {
-            animation: cyberGlow 1.5s infinite;
-        }
-
-        @keyframes cyberGlow {
-            0% { left: -50%; }
-            100% { left: 150%; }
+        .light-mode h1 {
+            text-shadow: 0 0 15px var(--neon-purple);
         }
 
         /* Container and Columns */
         .container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            display: flex;
             gap: 2rem;
             padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
+            overflow-x: auto;
+            max-width: 100%;
         }
 
         .column {
@@ -115,12 +61,14 @@
             border: 2px solid var(--neon-blue);
             border-radius: 8px;
             padding: 1.5rem;
+            min-width: 300px;
             min-height: 500px;
             transition: transform 0.3s ease;
         }
 
-        .column:hover {
-            transform: translateY(-5px);
+        .light-mode .column {
+            background: white;
+            border-color: var(--neon-purple);
         }
 
         .column h2 {
@@ -129,6 +77,11 @@
             border-bottom: 2px solid var(--neon-blue);
             padding-bottom: 1rem;
             margin-bottom: 1.5rem;
+        }
+
+        .light-mode .column h2 {
+            color: var(--neon-purple);
+            border-color: var(--neon-purple);
         }
 
         /* Task Styles */
@@ -142,8 +95,9 @@
             transition: all 0.3s ease;
         }
 
-        .task:hover {
-            box-shadow: 0 0 15px var(--neon-blue);
+        .light-mode .task {
+            background: white;
+            border-color: var(--neon-purple);
         }
 
         .task p {
@@ -152,87 +106,119 @@
             line-height: 1.4;
         }
 
-        /* Action Buttons */
-        .task-actions {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+        /* Timer Controls */
+        .timer-controls {
             display: flex;
             gap: 8px;
+            margin-top: 10px;
         }
 
-        .task-btn {
-            width: 32px;
-            height: 32px;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
+        .timer-controls button {
             background: var(--cyber-gray);
+            border: 1px solid var(--neon-blue);
             color: var(--neon-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .task-btn:hover {
+        .light-mode .timer-controls button {
+            background: white;
+            border-color: var(--neon-purple);
+            color: var(--neon-purple);
+        }
+
+        .timer-controls button:hover {
             background: var(--neon-blue);
             color: black;
-            transform: scale(1.1);
         }
 
-        /* Calendar Modal */
-        .calendar-modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(10, 10, 15, 0.95);
-            border: 2px solid var(--neon-blue);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            padding: 2rem;
-            width: 90%;
-            max-width: 400px;
-            z-index: 1000;
+        /* Settings Dropdown */
+        .settings-dropdown {
+            position: absolute;
+            top: 10px;
+            right: 10px;
         }
 
-        .calendar-modal h2 {
-            color: var(--neon-purple);
-            margin-bottom: 1.5rem;
-        }
-
-        .calendar-modal input[type="date"] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 1.5rem;
-            background: var(--cyber-gray);
-            border: 2px solid var(--neon-blue);
+        .settings-btn {
+            background: none;
+            border: none;
             color: var(--neon-blue);
+            cursor: pointer;
+            font-size: 1.2rem;
         }
 
-        /* Snapshot Timestamp */
-        #snapshot-timestamp {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(10, 10, 15, 0.9);
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 1px solid var(--neon-blue);
+        .light-mode .settings-btn {
+            color: var(--neon-purple);
+        }
+
+        .dropdown-content {
             display: none;
-            font-family: 'Orbitron', sans-serif;
+            position: absolute;
+            right: 0;
+            background: var(--cyber-gray);
+            border: 1px solid var(--neon-blue);
+            border-radius: 4px;
+            padding: 8px;
+            z-index: 1;
+        }
+
+        .light-mode .dropdown-content {
+            background: white;
+            border-color: var(--neon-purple);
+        }
+
+        .dropdown-content button {
+            display: block;
+            background: none;
+            border: none;
+            color: var(--neon-blue);
+            padding: 8px;
+            cursor: pointer;
+            text-align: left;
+            width: 100%;
+        }
+
+        .light-mode .dropdown-content button {
+            color: var(--neon-purple);
+        }
+
+        .dropdown-content button:hover {
+            background: var(--neon-blue);
+            color: black;
+        }
+
+        .light-mode .dropdown-content button:hover {
+            background: var(--neon-purple);
+            color: white;
+        }
+
+        /* Move Button */
+        .move-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--neon-blue);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .light-mode .move-btn {
+            color: var(--neon-purple);
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
             .container {
-                grid-template-columns: 1fr;
+                flex-direction: row;
+                overflow-x: auto;
             }
-            
+
             .column {
-                min-height: auto;
+                min-width: 250px;
             }
         }
     </style>
@@ -339,91 +325,21 @@
             }
         }
 
-        // Calendar functionality
-        function openCalendar() {
-            document.querySelector('.calendar-modal').style.display = 'block';
-            document.querySelector('.overlay').style.display = 'block';
+        // Settings dropdown functionality
+        function toggleDropdown(button) {
+            const dropdown = button.nextElementSibling;
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
         }
 
-        function closeCalendar() {
-            document.querySelector('.calendar-modal').style.display = 'none';
-            document.querySelector('.overlay').style.display = 'none';
-        }
-
-        function addTaskForDate() {
-            const taskText = document.getElementById('task-for-date').value;
-            const taskDate = document.getElementById('task-date').value;
-            if (!taskText || !taskDate) return alert("Please enter a task and select a date!");
-
-            const task = document.createElement("div");
-            task.classList.add("task");
-            task.id = `task-${Date.now()}`;
-            task.innerHTML = `
-                <p>📅 ${taskDate} - ${taskText}</p>
-                <div class="timer">00:00</div>
-                <div class="timer-controls">
-                    <button onclick="startTimer(this)">▶️</button>
-                    <button onclick="pauseTimer(this)">⏸️</button>
-                    <button onclick="resetTimer(this)">🔄</button>
-                </div>
-                <div class="task-actions">
-                    <button class="task-btn" onclick="deleteTask(this)">✖️</button>
-                    <button class="task-btn" onclick="editTask(this)">✏️</button>
-                    <button class="task-btn" onclick="moveTask(this)">⇓</button>
-                </div>
-            `;
-            document.getElementById("todo").appendChild(task);
-            document.getElementById('task-for-date').value = "";
-            closeCalendar();
-            saveTasks();
-        }
-
-        // Share snapshot functionality
-        async function shareSnapshot() {
-            const timestamp = new Date().toLocaleString();
-            const timestampElement = document.getElementById('snapshot-timestamp');
-            timestampElement.textContent = timestamp;
-            timestampElement.style.display = 'block';
-
-            await new Promise(resolve => setTimeout(resolve, 50));
-            
-            html2canvas(document.body).then(canvas => {
-                timestampElement.style.display = 'none';
-                const imgData = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.href = imgData;
-                link.download = `cybertask-snapshot-${Date.now()}.png`;
-                link.click();
-            });
-        }
-
-        // Edit task functionality
-        function editTask(button) {
-            const task = button.closest('.task');
-            const taskText = task.querySelector('p').innerText;
-            const newText = prompt('Edit your task:', taskText);
-            if (newText !== null && newText.trim() !== '') {
-                task.querySelector('p').innerText = newText;
-                saveTasks();
-            }
-        }
-
-        // Delete task functionality
-        function deleteTask(button) {
-            const task = button.closest('.task');
-            task.remove();
-            saveTasks();
-        }
-
-        // Dark mode
+        // Dark mode functionality
         function toggleDarkMode() {
-            document.body.classList.toggle("dark-mode");
-            localStorage.setItem("darkMode", document.body.classList.contains("dark-mode") ? "enabled" : "disabled");
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('light-mode') ? 'disabled' : 'enabled');
         }
 
         function loadDarkMode() {
-            if (localStorage.getItem("darkMode") === "enabled") {
-                document.body.classList.add("dark-mode");
+            if (localStorage.getItem('darkMode') === 'disabled') {
+                document.body.classList.add('light-mode');
             }
         }
 
@@ -453,53 +369,28 @@
                     task.id = `task-${Date.now()}`;
                     task.innerHTML = `
                         <p>${taskData.text}</p>
-                        <div class="timer">${taskData.timer}</div>
+                        <div class="timer">00:00</div>
                         <div class="timer-controls">
                             <button onclick="startTimer(this)">▶️</button>
                             <button onclick="pauseTimer(this)">⏸️</button>
                             <button onclick="resetTimer(this)">🔄</button>
                         </div>
-                        <div class="task-actions">
-                            <button class="task-btn" onclick="deleteTask(this)">✖️</button>
-                            <button class="task-btn" onclick="editTask(this)">✏️</button>
-                            <button class="task-btn" onclick="moveTask(this)">⇓</button>
+                        <div class="settings-dropdown">
+                            <button class="settings-btn" onclick="toggleDropdown(this)">⚙️</button>
+                            <div class="dropdown-content">
+                                <button onclick="editTask(this)">✏️ Edit</button>
+                                <button onclick="deleteTask(this)">✖️ Delete</button>
+                            </div>
                         </div>
+                        <button class="move-btn" onclick="moveTask(this)">➡️</button>
                     `;
                     document.getElementById(col).appendChild(task);
                 });
             });
         }
 
-        function addTask() {
-            let taskText = document.getElementById("task-input").value;
-            let priority = document.getElementById("priority-input").value;
-            if (!taskText) return alert("Please enter a task!");
-
-            let task = document.createElement("div");
-            task.classList.add("task");
-            task.id = `task-${Date.now()}`;
-            task.innerHTML = `
-                <p>${priority} ${taskText}</p>
-                <div class="timer">00:00</div>
-                <div class="timer-controls">
-                    <button onclick="startTimer(this)">▶️</button>
-                    <button onclick="pauseTimer(this)">⏸️</button>
-                    <button onclick="resetTimer(this)">🔄</button>
-                </div>
-                <div class="task-actions">
-                    <button class="task-btn" onclick="deleteTask(this)">✖️</button>
-                    <button class="task-btn" onclick="editTask(this)">✏️</button>
-                    <button class="task-btn" onclick="moveTask(this)">⇓</button>
-                </div>
-            `;
-            document.getElementById("todo").appendChild(task);
-            document.getElementById("task-input").value = "";
-            saveTasks();
-        }
-
         loadDarkMode();
         loadTasks();
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
