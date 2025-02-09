@@ -204,7 +204,7 @@
 </head>
 <body>
     <header>
-        <h1>Test6</h1>
+        <h1>Test7</h1>
         <nav>
             <ul>
                 <li><a href="shayari.html" class="links">Shayari🪶</a></li>
@@ -357,7 +357,17 @@
             taskContainer.appendChild(timer);
             taskContainer.appendChild(timerControls);
 
-  
+            // Add the task to the first available container
+            if (container1.childElementCount < 100) {
+                container1.appendChild(taskContainer);
+            } else if (container2.childElementCount < 100) {
+                container2.appendChild(taskContainer);
+            } else {
+                container3.appendChild(taskContainer);
+            }
+
+            updateTaskContainer(task, new Date().toLocaleDateString('en-GB'));
+        }
 
         // Timer functions
         function startTimer(timer) {
