@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Manager </title>
+    <title>Task Manager ✅</title>
     <style>
         /* General Styles */
         body {
@@ -180,6 +180,27 @@
             background: #0768b2;
         }
 
+        .task .move-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: #00b894;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .task .move-btn:hover {
+            background: #00997b;
+        }
+
         /* Timer Styles */
         .timer {
             margin-top: 10px;
@@ -224,6 +245,56 @@
         .share-btn:hover {
             transform: scale(1.1);
         }
+
+        /* Calendar Modal */
+        .calendar-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .calendar-modal h2 {
+            margin-bottom: 20px;
+        }
+
+        .calendar-modal input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .calendar-modal button {
+            background: #00b894;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .calendar-modal button:hover {
+            background: #00997b;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
     </style>
 </head>
 <body>
@@ -231,7 +302,7 @@
     <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌅</button>
     <button class="share-btn" onclick="shareSnapshot()">⤴️</button>
 
-    <h1>Task Manager </h1>
+    <h1>Task Manager ✅</h1>
     <input type="text" id="task-input" placeholder="Enter a task...">
     <select id="priority-input">
         <option value="🔴">🔴</option>
@@ -239,6 +310,7 @@
         <option value="🟢">🟢</option>
     </select>
     <button class="btn-add" onclick="addTask()">Add Task</button>
+    <button class="btn-add" onclick="openCalendar()">📅 Add Task for Date</button>
 
     <div class="container">
         <div class="column" id="todo">
@@ -252,15 +324,32 @@
         </div>
     </div>
 
+    <!-- Calendar Modal -->
+    <div class="overlay" onclick="closeCalendar()"></div>
+    <div class="calendar-modal">
+        <h2>Select a Date</h2>
+        <input type="date" id="task-date">
+        <input type="text" id="task-for-date" placeholder="Enter a task...">
+        <button onclick="addTaskForDate()">Add Task</button>
+    </div>
+
     <script>
         // Timer functionality
+        let timers = {};
+
         function startTimer(button) {
             const timerDisplay = button.parentElement.previousElementSibling;
+            const taskId = button.closest('.task').id;
+
+            if (timers[taskId]) {
+                clearInterval(timers[taskId]);
+            }
+
             let time = timerDisplay.innerText.split(':');
             let minutes = parseInt(time[0]);
             let seconds = parseInt(time[1]);
 
-            const timer = setInterval(() => {
+            timers[taskId] = setInterval(() => {
                 seconds++;
                 if (seconds === 60) {
                     seconds = 0;
@@ -268,84 +357,82 @@
                 }
                 timerDisplay.innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             }, 1000);
-
-            // Store the timer ID in the button for pausing
-            button.timerId = timer;
         }
 
         function pauseTimer(button) {
-            clearInterval(button.timerId);
+            const taskId = button.closest('.task').id;
+            if (timers[taskId]) {
+                clearInterval(timers[taskId]);
+                delete timers[taskId];
+            }
         }
 
         function resetTimer(button) {
             const timerDisplay = button.parentElement.previousElementSibling;
+            const taskId = button.closest('.task').id;
             timerDisplay.innerText = '00:00';
-            clearInterval(button.timerId);
+            if (timers[taskId]) {
+                clearInterval(timers[taskId]);
+                delete timers[taskId];
+            }
         }
 
-        // Drag and drop functionality
-        let draggedTask = null;
+        // Move task functionality
+        function moveTask(button) {
+            const task = button.closest('.task');
+            const currentColumn = task.parentElement.id;
 
-        document.querySelectorAll('.column').forEach(column => {
-            column.addEventListener('dragover', e => {
-                e.preventDefault();
-                column.style.backgroundColor = '#f0f0f0';
-            });
-
-            column.addEventListener('dragleave', () => {
-                column.style.backgroundColor = '';
-            });
-
-            column.addEventListener('drop', () => {
-                column.style.backgroundColor = '';
-                if (draggedTask) {
-                    column.appendChild(draggedTask);
-                    saveTasks();
-                }
-            });
-
-            // Touch events for mobile
-            column.addEventListener('touchmove', e => {
-                e.preventDefault();
-                if (draggedTask) {
-                    const touch = e.touches[0];
-                    draggedTask.style.position = 'absolute';
-                    draggedTask.style.left = `${touch.clientX - draggedTask.offsetWidth / 2}px`;
-                    draggedTask.style.top = `${touch.clientY - draggedTask.offsetHeight / 2}px`;
-                }
-            });
-
-            column.addEventListener('touchend', () => {
-                if (draggedTask) {
-                    column.appendChild(draggedTask);
-                    draggedTask.style.position = '';
-                    draggedTask.style.left = '';
-                    draggedTask.style.top = '';
-                    draggedTask = null;
-                    saveTasks();
-                }
-            });
-        });
-
-        document.addEventListener('dragstart', e => {
-            if (e.target.classList.contains('task')) {
-                draggedTask = e.target;
-                setTimeout(() => e.target.style.display = 'none', 0);
+            let nextColumn;
+            if (currentColumn === 'todo') {
+                nextColumn = document.getElementById('in-progress');
+            } else if (currentColumn === 'in-progress') {
+                nextColumn = document.getElementById('done');
+            } else if (currentColumn === 'done') {
+                nextColumn = document.getElementById('todo');
             }
-        });
 
-        document.addEventListener('dragend', e => {
-            if (e.target.classList.contains('task')) {
-                e.target.style.display = 'block';
-                draggedTask = null;
+            if (nextColumn) {
+                nextColumn.appendChild(task);
+                saveTasks();
             }
-        });
+        }
 
-        document.addEventListener('touchstart', e => {
-            if (e.target.classList.contains('task')) {
-                draggedTask = e.target;
-            }
-        });
+        // Calendar functionality
+        function openCalendar() {
+            document.querySelector('.calendar-modal').style.display = 'block';
+            document.querySelector('.overlay').style.display = 'block';
+        }
+
+        function closeCalendar() {
+            document.querySelector('.calendar-modal').style.display = 'none';
+            document.querySelector('.overlay').style.display = 'none';
+        }
+
+        function addTaskForDate() {
+            const taskText = document.getElementById('task-for-date').value;
+            const taskDate = document.getElementById('task-date').value;
+            if (!taskText || !taskDate) return alert("Please enter a task and select a date!");
+
+            const task = document.createElement("div");
+            task.classList.add("task");
+            task.id = `task-${Date.now()}`;
+            task.innerHTML = `
+                <p>📅 ${taskDate} - ${taskText}</p>
+                <div class="timer">00:00</div>
+                <div class="timer-controls">
+                    <button onclick="startTimer(this)">▶️</button>
+                    <button onclick="pauseTimer(this)">⏸️</button>
+                    <button onclick="resetTimer(this)">🔄</button>
+                </div>
+                <button class="delete-btn" onclick="deleteTask(this)">✖️</button>
+                <button class="edit-btn" onclick="editTask(this)">✏️</button>
+                <button class="move-btn" onclick="moveTask(this)">⇓</button>
+            `;
+            document.getElementById("todo").appendChild(task);
+            document.getElementById('task-for-date').value = "";
+            closeCalendar();
+            saveTasks();
+        }
 
         // Share snapshot functionality
         function shareSnapshot() {
@@ -411,7 +498,7 @@
                     let task = document.createElement("div");
                     task.classList.add("task");
                     if (taskData.completed) task.classList.add("completed");
-                    task.setAttribute('draggable', true);
+                    task.id = `task-${Date.now()}`;
                     task.innerHTML = `
                         <p>${taskData.text}</p>
                         <div class="timer">${taskData.timer}</div>
@@ -422,6 +509,7 @@
                         </div>
                         <button class="delete-btn" onclick="deleteTask(this)">✖️</button>
                         <button class="edit-btn" onclick="editTask(this)">✏️</button>
+                        <button class="move-btn" onclick="moveTask(this)">⇓</button>
                     `;
                     document.getElementById(col).appendChild(task);
                 });
@@ -435,7 +523,7 @@
 
             let task = document.createElement("div");
             task.classList.add("task");
-            task.setAttribute('draggable', true);
+            task.id = `task-${Date.now()}`;
             task.innerHTML = `
                 <p>${priority} ${taskText}</p>
                 <div class="timer">00:00</div>
@@ -446,6 +534,7 @@
                 </div>
                 <button class="delete-btn" onclick="deleteTask(this)">✖️</button>
                 <button class="edit-btn" onclick="editTask(this)">✏️</button>
+                <button class="move-btn" onclick="moveTask(this)">⇓</button>
             `;
             document.getElementById("todo").appendChild(task);
             document.getElementById("task-input").value = "";
