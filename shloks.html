@@ -117,6 +117,12 @@
             font-size: 0.9em;
         }
 
+        .task-timer {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: var(--secondary);
+        }
+
         .task-controls {
             display: flex;
             gap: 10px;
@@ -154,8 +160,18 @@
             position: absolute;
             bottom: 15px;
             right: 15px;
-            padding: 8px;
+            padding: 5px;
             border-radius: 8px;
+            font-size: 0.8em;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .move-btn:hover {
+            background: var(--secondary);
         }
 
         .stats-section {
@@ -243,10 +259,21 @@
                 min-width: 280px;
             }
         }
+
+        /* Celebration Animation */
+        @keyframes celebrate {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .celebrate {
+            animation: celebrate 0.5s ease-in-out;
+        }
     </style>
 </head>
 <body>
-    <h1>ProTask Analytics Dashboard</h1>
+    <h1>ProTask</h1>
     <div style="text-align: center; margin-bottom: 30px;">
         <input type="text" id="task-input" placeholder="Enter task...">
         <select id="priority-input">
@@ -366,7 +393,7 @@
             stamp.textContent = new Date().toLocaleString();
             stamp.style.display = 'block';
             
-            html2canvas(document.querySelector('.container')).then(canvas => {
+            html2canvas(document.body).then(canvas => {
                 stamp.style.display = 'none';
                 const link = document.createElement('a');
                 link.href = canvas.toDataURL();
@@ -386,6 +413,7 @@
                 <div class="task-content">
                     <p>${text}</p>
                     ${dueDate ? `<small>Due: ${new Date(dueDate).toLocaleString()}</small>` : ''}
+                    <div class="task-timer">00:00</div>
                     <div class="task-controls">
                         <button onclick="startTimer(this)">▶️ Play</button>
                         <button onclick="pauseTimer(this)">⏸️ Pause</button>
@@ -396,7 +424,7 @@
                     <button class="action-btn" onclick="editTask(this)">✏️</button>
                     <button class="action-btn" onclick="deleteTask(this)">✖️</button>
                 </div>
-                <button class="move-btn primary" onclick="moveTask(this)">➡️</button>
+                <button class="move-btn" onclick="moveTask(this)">➡️</button>
             `;
             return task;
         }
@@ -434,8 +462,27 @@
             const nextColumn = columns[(columns.indexOf(currentColumn) + 1) % columns.length];
 
             document.getElementById(nextColumn).appendChild(task);
-            if (nextColumn === 'done') trackMetrics('complete', task);
+            if (nextColumn === 'done') {
+                trackMetrics('complete', task);
+                celebrateTask(task);
+            }
             saveTasks();
+        }
+
+        function celebrateTask(task) {
+            const emojis = ['🎆', '🎊', '🎉'];
+            emojis.forEach((emoji, index) => {
+                setTimeout(() => {
+                    const span = document.createElement('span');
+                    span.textContent = emoji;
+                    span.className = 'celebrate';
+                    span.style.position = 'absolute';
+                    span.style.left = `${Math.random() * 100}%`;
+                    span.style.top = `${Math.random() * 100}%`;
+                    task.appendChild(span);
+                    setTimeout(() => span.remove(), 1000);
+                }, index * 300);
+            });
         }
 
         function editTask(button) {
