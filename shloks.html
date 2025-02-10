@@ -401,12 +401,60 @@
             return task;
         }
 
-        // ... (Rest of the JavaScript functions from previous implementation) ...
+        function addTask() {
+            const taskText = document.getElementById('task-input').value.trim();
+            const priorityColor = document.getElementById('priority-input').value;
 
-        // Initialize
-        if(localStorage.getItem('darkMode') === 'true') toggleDarkMode();
-        loadMetrics();
-        loadTasks();
+            if (!taskText) return alert('Please enter a task!');
+
+            const task = createTaskElement(taskText, priorityColor);
+            document.getElementById('todo').appendChild(task);
+            document.getElementById('task-input').value = '';
+            saveTasks();
+            trackMetrics('add');
+        }
+
+        function addScheduledTask() {
+            const taskText = document.getElementById('task-for-date').value.trim();
+            const dueDateTime = document.getElementById('task-datetime').value;
+
+            if (!taskText || !dueDateTime) return alert('Please fill all fields!');
+
+            const task = createTaskElement(taskText, document.getElementById('priority-input').value, dueDateTime);
+            document.getElementById('todo').appendChild(task);
+            closeCalendar();
+            saveTasks();
+            trackMetrics('add');
+        }
+
+        function moveTask(button) {
+            const task = button.closest('.task');
+            const currentColumn = task.parentElement.id;
+            const columns = ['todo', 'in-progress', 'done'];
+            const nextColumn = columns[(columns.indexOf(currentColumn) + 1) % columns.length];
+
+            document.getElementById(nextColumn).appendChild(task);
+            if (nextColumn === 'done') trackMetrics('complete', task);
+            saveTasks();
+        }
+
+        function editTask(button) {
+            const task = button.closest('.task');
+            const currentText = task.querySelector('p').textContent;
+            const newText = prompt('Edit task:', currentText);
+
+            if (newText !== null) {
+                task.querySelector('p').textContent = newText;
+                saveTasks();
+            }
+        }
+
+        function deleteTask(button) {
+            const task = button.closest('.task');
+            task.remove();
+            saveTasks();
+            trackMetrics('delete');
+        }
 
         // Timer Functionality
         let timers = {};
@@ -441,7 +489,145 @@
             clearInterval(timers[taskId]);
         }
 
-        // ... (Remaining JavaScript functions for task management) ...
+        // Metrics Tracking
+        function trackMetrics(action, task) {
+            const today = new Date().toLocaleDateString();
+            metrics.dailyStats[today] = metrics.dailyStats[today] || { completed: 0, time: 0 };
+
+            switch (action) {
+                case 'add':
+                    metrics.totalTasks++;
+                    break;
+                case 'complete':
+                    metrics.completedTasks++;
+                    metrics.dailyStats[today].completed++;
+                    const timerText = task.querySelector('.timer').textContent;
+                    const [mins, secs] = timerText.split(':').map(Number);
+                    metrics.timeSpent += mins + (secs / 60);
+                    metrics.dailyStats[today].time += mins + (secs / 60);
+                    break;
+                case 'delete':
+                    metrics.totalTasks--;
+                    break;
+            }
+            updateMetrics();
+            saveMetrics();
+        }
+
+        function updateMetrics() {
+            document.getElementById('total-tasks').querySelector('p').textContent = metrics.totalTasks;
+            document.getElementById('completed-tasks').querySelector('p').textContent = metrics.completedTasks;
+            document.getElementById('avg-time').querySelector('p').textContent =
+                metrics.completedTasks > 0 ?
+                    `${Math.round(metrics.timeSpent / metrics.completedTasks)}m` : '0m';
+
+            const dates = Object.keys(metrics.dailyStats).sort();
+            analyticsChart.data.labels = dates;
+            analyticsChart.data.datasets[0].data = dates.map(d => metrics.dailyStats[d].completed);
+            analyticsChart.data.datasets[1].data = dates.map(d => metrics.dailyStats[d].time);
+            analyticsChart.update();
+        }
+
+        // Save/Load Metrics
+        function saveMetrics() {
+            localStorage.setItem('taskMetrics', JSON.stringify(metrics));
+        }
+
+        function loadMetrics() {
+            const saved = localStorage.getItem('taskMetrics');
+            if (saved) metrics = JSON.parse(saved);
+            updateMetrics();
+        }
+
+        // Save/Load Tasks
+                function saveTasks() {
+            const tasks = {
+                todo: Array.from(document.getElementById('todo').children).slice(1),
+                'in-progress': Array.from(document.getElementById('in-progress').children).slice(1),
+                done: Array.from(document.getElementById('done').children).slice(1)
+            };
+
+            const serialized = {};
+            for (const [column, tasks] of Object.entries(tasks)) {
+                serialized[column] = tasks.map(task => ({
+                    text: task.querySelector('p').textContent,
+                    priority: task.querySelector('.priority-dot').style.backgroundColor,
+                    timer: task.querySelector('.timer').textContent,
+                    dueDate: task.querySelector('small')?.textContent.replace('Due: ', '')
+                }));
+            }
+
+            localStorage.setItem('tasks', JSON.stringify(serialized));
+        }
+
+        function loadTasks() {
+            const saved = JSON.parse(localStorage.getItem('tasks')) || {};
+            
+            for (const [column, tasks] of Object.entries(saved)) {
+                const container = document.getElementById(column);
+                tasks.forEach(taskData => {
+                    const task = createTaskElement(
+                        taskData.text,
+                        taskData.priority,
+                        taskData.dueDate ? new Date(taskData.dueDate) : null
+                    );
+                    task.querySelector('.timer').textContent = taskData.timer;
+                    container.appendChild(task);
+                });
+            }
+        }
+
+        // Calendar Functions
+        function openCalendar() {
+            document.querySelector('.calendar-modal').style.display = 'block';
+            document.querySelector('.overlay').style.display = 'block';
+        }
+
+        function closeCalendar() {
+            document.querySelector('.calendar-modal').style.display = 'none';
+            document.querySelector('.overlay').style.display = 'none';
+        }
+
+        // Drag & Drop
+        let draggedTask = null;
+
+        document.querySelectorAll('.column').forEach(column => {
+            column.addEventListener('dragover', e => {
+                e.preventDefault();
+                column.style.backgroundColor = 'rgba(0,0,0,0.05)';
+            });
+
+            column.addEventListener('dragleave', () => {
+                column.style.backgroundColor = '';
+            });
+
+            column.addEventListener('drop', () => {
+                column.style.backgroundColor = '';
+                if (draggedTask) {
+                    column.appendChild(draggedTask);
+                    saveTasks();
+                }
+            });
+        });
+
+        document.addEventListener('dragstart', e => {
+            if (e.target.classList.contains('task')) {
+                draggedTask = e.target;
+                setTimeout(() => e.target.style.opacity = '0.5', 0);
+            }
+        });
+
+        document.addEventListener('dragend', e => {
+            if (e.target.classList.contains('task')) {
+                e.target.style.opacity = '1';
+                draggedTask = null;
+            }
+        });
+
+        // Initialize
+        if(localStorage.getItem('darkMode') === 'true') toggleDarkMode();
+        loadMetrics();
+        loadTasks();
     </script>
 </body>
 </html>
